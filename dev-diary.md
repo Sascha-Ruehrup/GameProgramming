@@ -9,6 +9,6 @@ einige Ideen waren unter anderem:
 
 _Boxhead_
 
-1. benötigt Flash-Player
+1. benötigt Flash-Player - nicht mehr unterstützt
 2. hat viele Stellschrauben
 3. hat unsere Kindheit maßgeblich geprägt
