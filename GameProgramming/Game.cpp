@@ -31,7 +31,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	else {
 		isRunning = false;
 	}
-	SDL_Surface* tmpSurface = IMG_Load("assets/Player.png");
+	SDL_Surface* tmpSurface = IMG_Load("assets/holzfaeller.png");
 	playerTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
 	SDL_FreeSurface(tmpSurface);
 }
@@ -48,8 +48,8 @@ void Game::handleEvents()
 	}
 }
 void Game::update() {
-	destRectangle.h = 32;
-	destRectangle.w = 32;
+	destRectangle.h = 128;
+	destRectangle.w = 128;
 	destRectangle.x += 1;
 }
 void Game::render()
