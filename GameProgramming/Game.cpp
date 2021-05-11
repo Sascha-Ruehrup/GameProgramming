@@ -47,7 +47,9 @@ void Game::handleEvents()
 	}
 }
 void Game::update() {
-	player->Update();
+	destRectangle.h = 32;
+	destRectangle.w = 32;
+	destRectangle.x += 1;
 }
 void Game::render()
 {
