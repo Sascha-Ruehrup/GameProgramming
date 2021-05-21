@@ -19,13 +19,15 @@ Um nun die ersten Schritte zu machen haben wir erstmal die Game.cpp formuliert. 
 
 Nachdem wir den Gameloop am laufen hatten, welcher nur ein Fenster angezeigt hat, haben wir ein ersten Entwurf unseres Characters gemacht. Hierfür haben wir das Programm Piskel verwendet, welches sich als sehr einfach in der Handhabung bewiesen hat, jedoch genau das erfüllt was wir brauchten. Nämlich ein mit wenig Pixeln dargestelltes "Männchen".
 
-<img src="https://github.com/Sascha-Ruehrup/GameProgramming/blob/gh-pages/images/Player.png" width="320" height="320" />
+<img src="images/Character.png" />
 
-Die .png Datei des Characters haben wir nun in unseren assets Ordner hinzugefügt und haben unsere erster Textur in das Fenster geladen.
-'''cpp
+Die .png Datei des Characters haben wir nun in unseren assets Ordner hinzugefügt und haben unsere erste Textur in das Fenster geladen.
+```cpp
 SDL_Surface* tmpSurface = IMG_Load("assets/Player.png");
 playerTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
 SDL_FreeSurface(tmpSurface);
-'''
+```
+Damit SDL unsere Bilder anzeigen kann mussten wir zuerst noch die SDL_Image Bibliothek ins Projekt einbinden. Danach haben wir die Textur mithilfe des update- Funktion für jeden Durchlauf des Gameloops um einen Pixel nach rechts verschoben. Außerdem haben wir damit sich unser Männchen gleichmäßig bewegt ein Frame- Limit eingebaut. Dieses sorgt dafür, dass jeder Durchlauf des Gameloops mindestens 16,6 Millisekunden dauert (60 Frames per Second).
 
-### 
+### 11.05.2021
+Für das einfachere Hinzufügen von Objekten in das Spiel haben wir zuerst einen Texturemanager erstellt, welcher eine Textur aus einem Bild erstellt. In der LoadTexture- Funktion macht das selbe wie der oben verwendete Code zum Laden einer Textur. Im nächsten Schritt wurde noch die GameObject.cpp hinzugefügt, welche eine Textur erhält und an den übergebenen Koordinaten platziert. Mithilfe der Update() und Render()- Funktion können in der Game.cpp nun einfach verschiedene GameObjects bewegt und angezeigt werden.
