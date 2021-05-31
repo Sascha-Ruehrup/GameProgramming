@@ -1,7 +1,7 @@
 #include "Game.hpp"
 #include "Texturemanager.h"
 #include "Map.h"
-
+#include "Vector2D.h"
 #include "Components.h"
 
 
@@ -43,7 +43,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	}
 	map = new Map();
 	
-	player.addComponent<PositionComponent>();
+	player.addComponent<TransformComponent>();
 	player.addComponent<SpriteComponent>("assets/player.png");
 	
 }
@@ -62,8 +62,12 @@ void Game::handleEvents()
 void Game::update() {
 	manager.refresh();
 	manager.update();
-	std::cout << player.getComponent<PositionComponent>().x() << "," <<
-		player.getComponent<PositionComponent>().y() << std::endl;
+	player.getComponent<TransformComponent>().position.add(Vector2D(5, 0));
+	if (player.getComponent<TransformComponent>().position.x > 100) {
+		player.getComponent<SpriteComponent>().setTex("assets/holzfaeller.png");
+	}
+	std::cout << player.getComponent<TransformComponent>().position.x << "," <<
+		player.getComponent<TransformComponent>().position.y << std::endl;
 
 }
 void Game::render()
