@@ -48,7 +48,9 @@ Damit SDL unsere Bilder anzeigen kann mussten wir zuerst noch die SDL_Image Bibl
 
 ### 04.06.2021
 <p align=justify>Damit sich unsere Spielfigur bewegen kann haben wir nun eine erste Steuerung eingebaut. Mit den Tasten w, a, s und d kann die Figur nun über das Fenster bewegt werden. Hierzu wurde die KeyboardController.h zu den Components hinzugefügt. In der KeyboardController- Klasse gibt es nun eine TransformComponent, welche beim drücken der festgelegten Tasten ihre velocity (Geschwindigkeit) ändern. Wenn man nun beispielsweise die w- Taste drückt wird der y- Wert des Velocity- Vektors der TransformComponent auf -1 gesetzt. Dadurch wird in der update- Funktion der TransformComponent vom y- Wert der Position immer etwas abgezogen. Dies sorgt dafür, dass sich das Männchen nach oben bewegt. Dies geschieht solange bis die Taste losgelassen wird, da in diesem Fall der y- Wert des Velocity- Vektors wieder auf 0 gesetzt wird. Allgemein wird das Drücken und Loslassen der Tasten über die Abfrage des Eventtypes festgestellt. Wird eine Taste gedrückt ist der Eventtyp = SDL_KEYDOWN und wird sie losgelassen ist er SDL_KEYUP. Wurde festgestellt was der Fall ist wird über ein switch- Statement festgestellt, welche Taste gedrückt wurde und je nachdem wird der Velocity- Vektor angepasst.
+</p>
 
-
-
+### 14.06.2021
+<p align=justify>Damit unsere Entities mit anderen Entities oder der Map zusammenstoßen und am weiterbewegen gehindert werden, oder generell eine Kollision erkannt wird, fügen wir heute die ersten Teile der Erkennung hinzu. Für diesen Zweck legen wir zuerst eine neue Komponente an, die passenderweise ColliderComponent.h heißt. Diese Komponente gibt der Entity eine Hitbox, die später zur Berechnung verwendet wird. Diese Berechnung findet in der Klasse Collision statt. Aktuell ist nur die AABB Kollision, also für zwei Rechtecke, implementiert. In der Game.cpp haben wir dann erstmal testweise eine neue Wand eingefügt, der eben dieser ColliderComponent zugeteilt wird. Da der Spieler ebenfalls diese Komponente erhält, kann nun in der update- Funktion überprüft werden, ob eine Kollision stattfindet. Es wird zwar aktuell nur ein Text in der Konsole ausgegeben, aber später soll beispielsweise der Spieler daran gehinder werden, sich durch eine Wand zu bewegen.
+</p>
 
