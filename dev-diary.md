@@ -59,3 +59,6 @@ Damit SDL unsere Bilder anzeigen kann mussten wir zuerst noch die SDL_Image Bibl
   
 Des weiteren wurde das erstellen der Maps verändert. Der Aufbau der Map wird nun aus einer Datei geladen, welche eine 16x16 Map speichert. Diese ist mit 0en, 1en und 2en gefüllt und wird beim Erstellen eingelesen. Wenn beispielsweise eine 2 eingelesen wird, wird die jeweilige TileComponent als Lava erstellt. Am wichtigsten dafür war die Anpassung der loadMap() Funktion, welche den Pfad der Datei und die x und y- Werte der Map braucht (in diesem Fall 16x16). Danach wird die datei mit 2 For- Schleifen eingelesen. Ansonsten mussten kleine Änderungen in der Game.cpp vorgenommen werden und es konnten viele alte Codestückchen zum erstellen der Map entfernt werden.
 </p>
+
+### 17.06.2021
+<p align=justify>Nachdem wir zuletzt unsere Map aus einer Datei geladen haben, wurde die Spielerfigur nicht mehr oberhalb der Map angezeigt. Um das Zukünftig besser zu Organisieren, erstellen wir Gruppen, denen die Entities zugehörig sein können. Das Gruppensystem ist ähnlich zu dem bereits vorhandenen Komponentensystem. Ein Manager verwaltet die jeweiligen Gruppen, und dieser kann den Entities übergeben werden. Eine Entity kann allerdings mehreren Gruppen angehören. Diese Gruppen werden dann nacheinander im Renderschritt abgearbeitet und die Entities werden im Fenster platziert.</p>
