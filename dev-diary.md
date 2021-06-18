@@ -61,4 +61,12 @@ Des weiteren wurde das erstellen der Maps verändert. Der Aufbau der Map wird nu
 </p>
 
 ### 17.06.2021
-<p align=justify>Nachdem wir zuletzt unsere Map aus einer Datei geladen haben, wurde die Spielerfigur nicht mehr oberhalb der Map angezeigt. Um das Zukünftig besser zu Organisieren, erstellen wir Gruppen, denen die Entities zugehörig sein können. Das Gruppensystem ist ähnlich zu dem bereits vorhandenen Komponentensystem. Ein Manager verwaltet die jeweiligen Gruppen, und dieser kann den Entities übergeben werden. Eine Entity kann allerdings mehreren Gruppen angehören. Diese Gruppen werden dann nacheinander im Renderschritt abgearbeitet und die Entities werden im Fenster platziert.</p>
+<p align=justify>Nachdem wir zuletzt unsere Map aus einer Datei geladen haben, wurde die Spielerfigur nicht mehr oberhalb der Map angezeigt. Um das Zukünftig besser zu Organisieren, erstellen wir Gruppen, denen die Entities zugehörig sein können. Das Gruppensystem ist ähnlich zu dem bereits vorhandenen Komponentensystem. Ein Manager verwaltet die jeweiligen Gruppen, und dieser kann den Entities übergeben werden. Eine Entity kann allerdings mehreren Gruppen angehören. Diese Gruppen werden 
+dann nacheinander im Renderschritt abgearbeitet und die Entities werden im Fenster platziert. 
+ </p> 
+ 
+### 18.06.2021
+<p align=justify>Im heutigen Update wurden erste Animationen eingebaut. Dafür musste zuerst ein neues png erstellt werden, in welchem alle Einzelbilder der verschiedenen Animationen abgebildet sind. Die einzelnen Frames einer Animationen sind von links nach rechts angeordnet und werden nach und nach durchlaufen. Für jede neue Animation muss im png 32 Pixel tiefer geschaut werden, da alle einzelnen Bilder aktuell 32x32 sind. Die Animationen werden ausgewählt je nachdem, welcher Index ihr zugewiesen wurde. Aktuell besitzt der Spieler eine kleine Animation wenn er steht und für das Laufen nach links und rechts. Diese Laufanimation wird aktuell auch noch abgespielt wenn der Charakter nach oben oder unten läuft. In der png Datei ist nur die Animation für das laufen von links nach rechts, jedoch kann diese durch  das SDL_RenderFlip- Flag einfach gespiegelt werden. Um die Animationen anzuzeigen wird im KeyboardController bei den jeweiligen Tasten die play- Funktion aus der SpriteComponent aufgerufen, welche die Animation abspielt. 
+  
+Somit haben wir nun die Möglichkeit in unsere png beliebig viele Animationen zu erstellen, denen wir nur eine ID, die Anzahl der frames und die Geschwindigkeit, wie schnell die Frames nacheinander angezeigt werden sollen, zuweisen müssen. Diese Animationen werden in einer Map abgespeichert und können über ihren Namen (Key) benutzt werden.  
+</p>
