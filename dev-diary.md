@@ -70,3 +70,4 @@ dann nacheinander im Renderschritt abgearbeitet und die Entities werden im Fenst
   
 Somit haben wir nun die Möglichkeit in unsere png beliebig viele Animationen zu erstellen, denen wir nur eine ID, die Anzahl der frames und die Geschwindigkeit, wie schnell die Frames nacheinander angezeigt werden sollen, zuweisen müssen. Diese Animationen werden in einer Map abgespeichert und können über ihren Namen (Key) benutzt werden.  
 </p>
+<img src="images/animated_player.png" />
