@@ -29,11 +29,14 @@ public:
 	SpriteComponent(const char* path, bool isAnimated)
 	{
 		animated = isAnimated;
-		Animation idle = Animation(0, 3, 100);
-		Animation walk = Animation(1, 4, 100);
+		Animation idle = Animation(1, 4, 200);	// row, spritecount, ms between sprites
+		Animation walkSideways = Animation(1, 4, 200);
+		Animation walkUp = Animation(0, 4, 200);
 
 		animations.emplace("Idle", idle);
-		animations.emplace("Walk", walk);
+		animations.emplace("WalkSideways", walkSideways);
+		animations.emplace("WalkUp", walkUp);
+		animations.emplace("WalkDown", walkSideways); // TODO
 		play("Idle");
 		setTex(path);
 	}
