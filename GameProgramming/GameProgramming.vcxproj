@@ -173,6 +173,7 @@
     <Image Include="..\..\..\..\Pictures\player.png" />
     <Image Include="assets\ground.png" />
     <Image Include="assets\lava.png" />
+    <Image Include="assets\Rambo_SpriteSheet.png" />
     <Image Include="assets\Rambo_Up_and_Walk_2.0.png" />
     <Image Include="assets\wall.png" />
   </ItemGroup>

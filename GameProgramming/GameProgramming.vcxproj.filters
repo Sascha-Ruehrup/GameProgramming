@@ -106,6 +106,9 @@
     <Image Include="assets\wall.png">
       <Filter>assets</Filter>
     </Image>
+    <Image Include="assets\Rambo_SpriteSheet.png">
+      <Filter>assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\40x25.map">

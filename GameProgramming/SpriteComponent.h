@@ -30,7 +30,7 @@ public:
 	{
 		animated = isAnimated;
 		Animation idle = Animation(1, 4, 200);	// row, spritecount, ms between sprites
-		Animation walkSideways = Animation(1, 4, 200);
+		Animation walkSideways = Animation(2, 10, 50);
 		Animation walkUp = Animation(0, 4, 200);
 
 		animations.emplace("Idle", idle);

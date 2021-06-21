@@ -61,7 +61,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	
 	Map::loadMap("assets/40x25.map",40,25);
 	player.addComponent<TransformComponent>(2);
-	player.addComponent<SpriteComponent>("assets/Rambo_Up_and_Walk_2.0.png",true); // player sprite sheet
+	player.addComponent<SpriteComponent>("assets/Rambo_SpriteSheet.png",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addGroup(groupPlayers);
