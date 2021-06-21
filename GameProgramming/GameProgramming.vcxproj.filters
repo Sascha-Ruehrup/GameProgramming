@@ -91,11 +91,25 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\Desktop\Character.png">
-      <Filter>assets</Filter>
-    </Image>
     <Image Include="..\..\..\..\Pictures\player.png">
       <Filter>assets</Filter>
     </Image>
+    <Image Include="assets\Rambo_Up_and_Walk_2.0.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\ground.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\lava.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\wall.png">
+      <Filter>assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\40x25.map">
+      <Filter>assets</Filter>
+    </None>
   </ItemGroup>
 </Project>
