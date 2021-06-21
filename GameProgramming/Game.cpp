@@ -59,7 +59,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	}
 	map = new Map();
 	
-	Map::loadMap("assets/16x16.map",16,16);
+	Map::loadMap("assets/40x25.map",40,25);
 	player.addComponent<TransformComponent>(2);
 	player.addComponent<SpriteComponent>("assets/Rambo_Up_and_Walk_2.0.png",true); // player sprite sheet
 	player.addComponent<KeyboardController>();
