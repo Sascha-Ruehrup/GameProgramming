@@ -16,6 +16,8 @@ Manager manager;
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
 
+const char* mapfile = "assets/terrain_ss.png";
+
 enum groupLabels : std::size_t
 {
 	groupMap,
@@ -60,12 +62,11 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	map = new Map();
 	
 	Map::loadMap("assets/40x25.map",40,25);
-	player.addComponent<TransformComponent>(2);
+	player.addComponent<TransformComponent>(4);
 	player.addComponent<SpriteComponent>("assets/Rambo_SpriteSheet.png",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addGroup(groupPlayers);
-
 	
 
 }
@@ -118,8 +119,8 @@ void Game::clean() {
 	SDL_Quit();
 	std::cout << "Game cleaned!" << std::endl;
 }
-void Game::addTile(int id, int x, int y) {
+void Game::addTile(int srcX, int srcY, int xpos, int ypos) {
 	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(x, y, 32, 32, id);
+	tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, mapfile);
 	tile.addGroup(groupMap);
 }
