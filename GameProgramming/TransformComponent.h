@@ -18,10 +18,10 @@ public:
 		position.Zero();
 	}
 
-	TransformComponent(int sc)
+	TransformComponent(int sc, int xpos, int ypos)
 	{
-		position.x = 400;
-		position.y = 320;
+		position.x = xpos;
+		position.y = ypos;
 		scale = sc;
 	}
 

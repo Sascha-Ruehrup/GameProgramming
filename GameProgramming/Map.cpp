@@ -43,6 +43,11 @@ void Map::loadMap(std::string path, int sizeX, int sizeY)
 				tcol.addComponent<ColliderComponent>("wall", x * scaledSize, y * scaledSize, scaledSize);
 				tcol.addGroup(Game::groupColliders);
 			}
+			if (c == '2') {
+				auto& tcol(manager.addEntity());
+				tcol.addComponent<ColliderComponent>("lava", x * scaledSize, y * scaledSize, scaledSize);
+				tcol.addGroup(Game::groupColliders);
+			}
 			mapFile.ignore();
 		}
 	}

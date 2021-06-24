@@ -56,10 +56,10 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	else {
 		isRunning = false;
 	}
-	map = new Map("assets/terrain_ss.png", 3, 32);
+	map = new Map("assets/terrain_ss.png", 2, 32);
 	
 	map->loadMap("assets/40x25.map",40,25);
-	player.addComponent<TransformComponent>(4);
+	player.addComponent<TransformComponent>(4, 400, 320);
 	player.addComponent<SpriteComponent>("assets/Rambo_SpriteSheet.png",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
@@ -92,8 +92,12 @@ void Game::update() {
 	for (auto& c : colliders) {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 		if (Collision::AABB(cCol, playerCol)) {
-
-			player.getComponent<TransformComponent>().position = playerPos;
+			if (c->getComponent<ColliderComponent>().tag == "wall") {
+				player.getComponent<TransformComponent>().position = playerPos;
+			}
+			else if (c->getComponent<ColliderComponent>().tag == "lava") {
+				std::cout << "I AM BURNING!" << std::endl;
+			}
 		}
 	}
 	camera.x = player.getComponent<TransformComponent>().position.x - 640;
