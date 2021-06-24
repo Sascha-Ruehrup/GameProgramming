@@ -16,6 +16,7 @@ public:
 	void update();
 	void render();
 	void clean();
+	void updateHealthbar(int damage);
 
 	bool running() { return isRunning; };
 
@@ -28,7 +29,8 @@ public:
 	{
 		groupMap,
 		groupPlayers,
-		groupColliders
+		groupColliders,
+		groupUI
 	};
 private:
 	SDL_Window* window;
