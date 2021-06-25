@@ -6,7 +6,7 @@
 class KeyboardController : public Component
 {
 public:
-	char lastKeyClicked;
+	char lastKeyClicked = 'd';
 	TransformComponent* transform;
 	SpriteComponent* sprite;
 	void init() override
@@ -45,7 +45,7 @@ public:
 				lastKeyClicked = 's';
 				break;
 			case SDLK_SPACE:
-				sprite->play("Shoot");
+				sprite->play("ShootSideways");
 				switch (lastKeyClicked)
 				{
 				case 'w':

@@ -35,13 +35,17 @@ public:
 			Animation walkSideways = Animation(2, 10, 50);
 			Animation walkUp = Animation(0, 4, 200);
 			Animation walkDown = Animation(3, 3, 200);
-			Animation shoot = Animation(4, 4, 50);
+			Animation shootSideways = Animation(4, 4, 50);
+			Animation shootUp = Animation(6, 4, 50);
+			Animation shootDown = Animation(5, 3, 50);
 
 			animations.emplace("Idle", idle);
 			animations.emplace("WalkSideways", walkSideways);
 			animations.emplace("WalkUp", walkUp);
 			animations.emplace("WalkDown", walkDown);
-			animations.emplace("Shoot", shoot);
+			animations.emplace("ShootSideways", shootSideways);
+			animations.emplace("ShootUp", shootUp);
+			animations.emplace("ShootDown", shootDown);
 			play("Idle");
 		}
 		setTex(id);
