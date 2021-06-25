@@ -71,3 +71,11 @@ dann nacheinander im Renderschritt abgearbeitet und die Entities werden im Fenst
 Somit haben wir nun die Möglichkeit in unsere png beliebig viele Animationen zu erstellen, denen wir nur eine ID, die Anzahl der frames und die Geschwindigkeit, wie schnell die Frames nacheinander angezeigt werden sollen, zuweisen müssen. Diese Animationen werden in einer Map abgespeichert und können über ihren Namen (Key) benutzt werden.  
 </p>
 <img src="images/player_animated.png" width="40%" height="40%"/>
+
+### 24.06.2021
+<p align=justify>Heute wurden zu den aktuell existierenden Tiles Collision hinzugefügt. Dafür wurde die TileMap auf eine andere Weise eingelesen und an allen Stellen, wo Collision gewünscht ist steht in der TileMap- Datei eine 1 (Wall- Collision) oder eine 2 (Lava- Collision). Überall wo eine 0 ist, ist normaler Boden und es wird kein Collider erstellt. Nun wird bei einer Collision zwischen dem Player und der Wall der Spieler immer wieder auf die Position vor der Collision zurück gesetzt. Dies sorgt dafür, dass er vor der Mauer stehen bleibt, wenn er in sie reinlaufen würde. Wenn der Spieler mit der Lava kollidiert wurde zuerst in der Konsole "I am burning!" ausgegeben. Um der Lava- Collision schonmal etwas mehr Sinn zu geben, haben wir eine Healthbar erstellt, welche aktuell immer oben links im Bildschirm zu sehen ist. Sobald der Spieler mit der Lava kollidiert bekommt er Schaden und die Healthbar schrumpft. Aktuell passiert noch nichts "schlimmeres" wenn die Healthbar komplett verschwunden ist, jedoch wird dies in Zukunft für ein Game Over sorgen und die Spielerfigur stirbt in einer Animation. 
+</p>
+
+### 25.06.2021
+<p align=justify>Da der Spieler bald schießen können wird wurde schon einmal eine Shooting- Animation erstellt, welche beim drücken der Leertaste angezeigt wird. Außerdem besitzt der Spieler jetzt eine Animation für das Runterlaufen.
+</p>
