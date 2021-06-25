@@ -32,11 +32,14 @@ public:
 		Animation idle = Animation(1, 4, 200);	// row, spritecount, ms between sprites
 		Animation walkSideways = Animation(2, 10, 50);
 		Animation walkUp = Animation(0, 4, 200);
+		Animation walkDown = Animation(3, 3, 200);
+		Animation shoot = Animation(4, 4, 50);
 
 		animations.emplace("Idle", idle);
 		animations.emplace("WalkSideways", walkSideways);
 		animations.emplace("WalkUp", walkUp);
-		animations.emplace("WalkDown", walkSideways); // TODO
+		animations.emplace("WalkDown", walkDown);
+		animations.emplace("Shoot", shoot);
 		play("Idle");
 		setTex(path);
 	}
