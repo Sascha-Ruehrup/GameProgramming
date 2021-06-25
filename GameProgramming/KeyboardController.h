@@ -6,6 +6,7 @@
 class KeyboardController : public Component
 {
 public:
+	char lastKeyClicked;
 	TransformComponent* transform;
 	SpriteComponent* sprite;
 	void init() override
@@ -16,6 +17,7 @@ public:
 
 	void update() override
 	{
+		Vector2D playerPosition = transform->position;
 		if (Game::event.type == SDL_KEYDOWN)
 		{
 			switch (Game::event.key.keysym.sym)
@@ -23,23 +25,44 @@ public:
 			case SDLK_w:
 				transform->velocity.y = -1;
 				sprite->play("WalkUp");
+				lastKeyClicked = 'w';
 				break;
 			case SDLK_a:
 				transform->velocity.x = -1;
 				sprite->play("WalkSideways");
 				sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
+				lastKeyClicked = 'a';
 				break;
 			case SDLK_d:
 				transform->velocity.x = 1;
 				sprite->play("WalkSideways");
 				sprite->spriteFlip = SDL_FLIP_NONE;
+				lastKeyClicked = 'd';
 				break;
 			case SDLK_s:
 				transform->velocity.y = 1;
 				sprite->play("WalkDown");
+				lastKeyClicked = 's';
 				break;
 			case SDLK_SPACE:
 				sprite->play("Shoot");
+				switch (lastKeyClicked)
+				{
+				case 'w':
+					Game::assets->createProjectile(playerPosition + Vector2D(52, -30), Vector2D(0, -3), 1000, 8, "projectile");
+					break;
+				case 'a':
+					Game::assets->createProjectile(playerPosition + Vector2D(-30, 52), Vector2D(-3, 0), 1000, 8, "projectile");
+					break;
+				case 's':
+					Game::assets->createProjectile(playerPosition + Vector2D(32, 62), Vector2D(0, 3), 1000, 8, "projectile");
+					break;
+				case 'd':
+					Game::assets->createProjectile(playerPosition + Vector2D(96, 52), Vector2D(3, 0), 1000, 8, "projectile");
+					break;
+				default:
+					break;
+				}
 				break;
 			case SDLK_ESCAPE:
 				Game::isRunning = false;

@@ -1,12 +1,12 @@
-#ifndef Game_hpp
-#define Game_hpp
+#ifndef Game_h
+#define Game_h
 
 #include <SDL.h>
 #include <SDL_image.h>
 #include <iostream>
 #include <vector>
+#include "AssetManager.h"
 
-class AssetManager;
 class ColliderComponent;
 class Game {
 public:
@@ -29,12 +29,12 @@ public:
 	static SDL_Rect camera;
 
 	static AssetManager* assets;
+
 	enum groupLabels : std::size_t
 	{
 		groupMap,
 		groupPlayers,
 		groupColliders,
-		groupProjectiles,
 		groupUI
 	};
 private:

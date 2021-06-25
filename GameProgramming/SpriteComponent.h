@@ -5,6 +5,7 @@
 #include "Texturemanager.h"
 #include "Animation.h"
 #include <map>
+#include "AssetManager.h"
 
 class SpriteComponent : public Component
 {
@@ -22,36 +23,37 @@ public:
 	std::map<const char*, Animation> animations;
 	SDL_RendererFlip spriteFlip = SDL_FLIP_NONE;
 	SpriteComponent() = default;
-	SpriteComponent(const char* path)
+	SpriteComponent(std::string id)
 	{
-		setTex(path);
+		setTex(id);
 	}
-	SpriteComponent(const char* path, bool isAnimated)
+	SpriteComponent(std::string id, bool isAnimated)
 	{
 		animated = isAnimated;
-		Animation idle = Animation(1, 4, 200);	// row, spritecount, ms between sprites
-		Animation walkSideways = Animation(2, 10, 50);
-		Animation walkUp = Animation(0, 4, 200);
-		Animation walkDown = Animation(3, 3, 200);
-		Animation shoot = Animation(4, 4, 50);
+		if (animated) {
+			Animation idle = Animation(1, 4, 200);	// row, spritecount, ms between sprites
+			Animation walkSideways = Animation(2, 10, 50);
+			Animation walkUp = Animation(0, 4, 200);
+			Animation walkDown = Animation(3, 3, 200);
+			Animation shoot = Animation(4, 4, 50);
 
-		animations.emplace("Idle", idle);
-		animations.emplace("WalkSideways", walkSideways);
-		animations.emplace("WalkUp", walkUp);
-		animations.emplace("WalkDown", walkDown);
-		animations.emplace("Shoot", shoot);
-		play("Idle");
-		setTex(path);
+			animations.emplace("Idle", idle);
+			animations.emplace("WalkSideways", walkSideways);
+			animations.emplace("WalkUp", walkUp);
+			animations.emplace("WalkDown", walkDown);
+			animations.emplace("Shoot", shoot);
+			play("Idle");
+		}
+		setTex(id);
 	}
 
 	~SpriteComponent()
 	{
-		SDL_DestroyTexture(texture);
 	}
 
-	void setTex(const char* path)
+	void setTex(std::string id)
 	{
-		texture = TextureManager::LoadTexture(path);
+		texture = Game::assets->getTexture(id);
 	}
 	void init() override
 	{

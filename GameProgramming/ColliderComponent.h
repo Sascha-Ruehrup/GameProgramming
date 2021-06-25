@@ -34,7 +34,7 @@ public:
 
 	void update() override
 	{
-		if (tag == "player") {
+		if (tag == "player" || tag == "projectile") {
 			collider.x = static_cast<int>(transform->position.x);
 			collider.y = static_cast<int>(transform->position.y);
 			collider.w = transform->width * transform->scale;

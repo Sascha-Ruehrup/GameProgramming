@@ -4,19 +4,19 @@
 #include "Components.h"
 #include "Vector2D.h"
 #include "Collision.h"
-
+#include "AssetManager.h"
 
 Map* map;
-
+Manager manager;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
 SDL_Rect Game::camera = { 0,0,1280, 800 };
 
-
+AssetManager* Game::assets = new AssetManager(&manager);
 bool Game::isRunning = false;
 
-Manager manager;
+
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
 auto& healthbar(manager.addEntity());
@@ -55,24 +55,33 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	else {
 		isRunning = false;
 	}
-	map = new Map("assets/terrain_ss.png", 2, 32);
+	assets->addTexture("terrain", "assets/terrain_ss.png");
+	assets->addTexture("player", "assets/Rambo_SpriteSheet.png");
+	assets->addTexture("healthbar", "assets/healthbar.png");
+	assets->addTexture("projectile", "assets/projectile.png");
+	map = new Map("terrain", 2, 32);
 	
 	map->loadMap("assets/40x25.map",40,25);
 	player.addComponent<TransformComponent>(4, 400, 320);
-	player.addComponent<SpriteComponent>("assets/Rambo_SpriteSheet.png",true); // player sprite sheet	Rambo_SpriteSheet.png
+	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addGroup(groupPlayers);
 	healthbar.addComponent<TransformComponent>(0, 0, 10, 100, 4);
-	healthbar.addComponent<SpriteComponent>("assets/healthbar.png");
+	healthbar.addComponent<SpriteComponent>("healthbar");
 	healthbar.addGroup(groupUI);
-	
+
+	assets->createProjectile(Vector2D(0, 320), Vector2D(2,0), 500, 1, "projectile");
+	assets->createProjectile(Vector2D(10, 400), Vector2D(2, 1), 500, 1, "projectile");
+	assets->createProjectile(Vector2D(0, 320), Vector2D(2, 4), 500, 1, "projectile");
+	assets->createProjectile(Vector2D(400, 0), Vector2D(0, 1), 500, 1, "projectile");
 
 }
 auto& tiles(manager.getGroup(Game::groupMap));
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
 auto& UI(manager.getGroup(Game::groupUI));
+auto& projectiles(manager.getGroup(Game::groupProjectiles));
 void Game::handleEvents()
 {
 	SDL_PollEvent(&event);
@@ -99,11 +108,20 @@ void Game::update() {
 				player.getComponent<TransformComponent>().position = playerPos;
 			}
 			else if (c->getComponent<ColliderComponent>().tag == "lava") {
-				damage = 1;
+				damage += 1;
 				std::cout << "I AM BURNING!" << std::endl;
 			}
 		}
 	}
+	/*for (auto& p : projectiles)
+	{
+		if (Collision::AABB(player.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
+		{
+			damage += 10;
+			p->destroy();
+
+		}
+	}*/
 	updateHealthbar(damage);
 	health -= damage;
 	camera.x = player.getComponent<TransformComponent>().position.x - 640;
@@ -140,6 +158,10 @@ void Game::render()
 		t->draw();
 	}
 	for (auto& p : players)
+	{
+		p->draw();
+	}
+	for (auto& p : projectiles)
 	{
 		p->draw();
 	}
