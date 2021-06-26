@@ -45,20 +45,23 @@ public:
 				lastKeyClicked = 's';
 				break;
 			case SDLK_SPACE:
-				sprite->play("ShootSideways");
 				switch (lastKeyClicked)
 				{
 				case 'w':
 					Game::assets->createProjectile(playerPosition + Vector2D(52, -30), Vector2D(0, -3), 1000, 8, "projectile");
+					sprite->play("ShootUp");
 					break;
 				case 'a':
 					Game::assets->createProjectile(playerPosition + Vector2D(-30, 52), Vector2D(-3, 0), 1000, 8, "projectile");
+					sprite->play("ShootSideways");
 					break;
 				case 's':
 					Game::assets->createProjectile(playerPosition + Vector2D(32, 62), Vector2D(0, 3), 1000, 8, "projectile");
+					sprite->play("ShootDown");
 					break;
 				case 'd':
 					Game::assets->createProjectile(playerPosition + Vector2D(96, 52), Vector2D(3, 0), 1000, 8, "projectile");
+					sprite->play("ShootSideways");
 					break;
 				default:
 					break;
@@ -74,23 +77,31 @@ public:
 			switch (Game::event.key.keysym.sym)
 			{
 			case SDLK_w:
-				transform->velocity.y = 0;
-				sprite->play("Idle");
+				if (transform->velocity.y < 0) {
+					transform->velocity.y = 0;
+					sprite->play("Idle");
+				}
 				break;
 			case SDLK_a:
-				transform->velocity.x = 0;
-				sprite->play("Idle");
+				if (transform->velocity.x < 0) {
+					transform->velocity.x = 0;
+					sprite->play("Idle");
+				}
 				break;
 			case SDLK_d:
-				transform->velocity.x = 0;
-				sprite->play("Idle");
+				if (transform->velocity.x > 0) {
+					transform->velocity.x = 0;
+					sprite->play("Idle");
+				}
 				break;
 			case SDLK_s:
-				transform->velocity.y = 0;
-				sprite->play("Idle");
+				if (transform->velocity.y > 0) {
+					transform->velocity.y = 0;
+					sprite->play("Idle");
+				}
 				break;
 			case SDLK_SPACE:
-				sprite->play("Idle");
+				//sprite->play("Idle");
 				break;
 			default:
 				break;
