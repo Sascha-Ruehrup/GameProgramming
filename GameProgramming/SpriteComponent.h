@@ -27,6 +27,11 @@ public:
 	{
 		setTex(id);
 	}
+	SpriteComponent(std::string id,SDL_RendererFlip flip)
+	{
+		spriteFlip = flip;
+		setTex(id);
+	}
 	SpriteComponent(std::string id, bool isAnimated)
 	{
 		animated = isAnimated;

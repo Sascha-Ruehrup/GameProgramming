@@ -48,19 +48,19 @@ public:
 				switch (lastKeyClicked)
 				{
 				case 'w':
-					Game::assets->createProjectile(playerPosition + Vector2D(52, -30), Vector2D(0, -3), 1000, 8, "projectile");
+					Game::assets->createProjectile(playerPosition + Vector2D(52, -30), Vector2D(0, -3), 1000, 8, "projectileUp", SDL_FLIP_NONE );
 					sprite->play("ShootUp");
 					break;
 				case 'a':
-					Game::assets->createProjectile(playerPosition + Vector2D(-30, 52), Vector2D(-3, 0), 1000, 8, "projectile");
+					Game::assets->createProjectile(playerPosition + Vector2D(-30, 52), Vector2D(-3, 0), 1000, 8, "projectileSideways", SDL_FLIP_HORIZONTAL);
 					sprite->play("ShootSideways");
 					break;
 				case 's':
-					Game::assets->createProjectile(playerPosition + Vector2D(32, 62), Vector2D(0, 3), 1000, 8, "projectile");
+					Game::assets->createProjectile(playerPosition + Vector2D(32, 62), Vector2D(0, 3), 1000, 8, "projectileUp", SDL_FLIP_VERTICAL);
 					sprite->play("ShootDown");
 					break;
 				case 'd':
-					Game::assets->createProjectile(playerPosition + Vector2D(96, 52), Vector2D(3, 0), 1000, 8, "projectile");
+					Game::assets->createProjectile(playerPosition + Vector2D(96, 52), Vector2D(3, 0), 1000, 8, "projectileSideways", SDL_FLIP_NONE);
 					sprite->play("ShootSideways");
 					break;
 				default:

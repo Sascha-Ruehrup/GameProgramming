@@ -58,7 +58,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->addTexture("terrain", "assets/terrain_ss.png");
 	assets->addTexture("player", "assets/Rambo_SpriteSheet.png");
 	assets->addTexture("healthbar", "assets/healthbar.png");
-	assets->addTexture("projectile", "assets/projectile.png");
+	assets->addTexture("projectileSideways", "assets/projectilesideways.png");
+	assets->addTexture("projectileUp", "assets/projectileup.png");
 	map = new Map("terrain", 2, 32);
 	
 	map->loadMap("assets/40x25.map",40,25);
@@ -71,10 +72,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	healthbar.addComponent<SpriteComponent>("healthbar");
 	healthbar.addGroup(groupUI);
 
-	assets->createProjectile(Vector2D(0, 320), Vector2D(2,0), 500, 1, "projectile");
-	assets->createProjectile(Vector2D(10, 400), Vector2D(2, 1), 500, 1, "projectile");
-	assets->createProjectile(Vector2D(0, 320), Vector2D(2, 4), 500, 1, "projectile");
-	assets->createProjectile(Vector2D(400, 0), Vector2D(0, 1), 500, 1, "projectile");
+	
 
 }
 auto& tiles(manager.getGroup(Game::groupMap));
@@ -171,6 +169,7 @@ void Game::render()
 	}
 	SDL_RenderPresent(renderer);
 }
+
 void Game::clean() {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
