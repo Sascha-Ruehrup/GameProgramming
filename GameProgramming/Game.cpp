@@ -5,7 +5,7 @@
 #include "Vector2D.h"
 #include "Collision.h"
 #include "AssetManager.h"
-
+#include <map>
 Map* map;
 Manager manager;
 SDL_Renderer* Game::renderer = nullptr;
@@ -15,7 +15,7 @@ SDL_Rect Game::camera = { 0,0,1280, 800 };
 
 AssetManager* Game::assets = new AssetManager(&manager);
 bool Game::isRunning = false;
-
+Vector2D* Game::playerPosition = new Vector2D(0.0f,0.0f);
 
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
@@ -57,12 +57,14 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	}
 	assets->addTexture("terrain", "assets/terrain_ss.png");
 	assets->addTexture("player", "assets/Rambo_SpriteSheet.png");
+	assets->addTexture("zombie", "assets/zombie.png");
 	assets->addTexture("healthbar", "assets/healthbar.png");
 	assets->addTexture("projectileSideways", "assets/projectilesideways.png");
 	assets->addTexture("projectileUp", "assets/projectileup.png");
 	map = new Map("terrain", 2, 32);
 	
 	map->loadMap("assets/40x25.map",40,25);
+	Game::spawnZombie(500, 200);
 	player.addComponent<TransformComponent>(4, 400, 320);
 	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
@@ -80,6 +82,7 @@ auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
 auto& UI(manager.getGroup(Game::groupUI));
 auto& projectiles(manager.getGroup(Game::groupProjectiles));
+auto& enemies(manager.getGroup(Game::groupEnemies));
 void Game::handleEvents()
 {
 	SDL_PollEvent(&event);
@@ -95,6 +98,11 @@ void Game::update() {
 
 	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
 	Vector2D playerPos = player.getComponent<TransformComponent>().position;
+	Game::playerPosition = &playerPos;
+	std::map<std::size_t, Vector2D>enemiesPositions;
+	for (auto& e : enemies) {
+		enemiesPositions.insert(std::make_pair(e->ID, e->getComponent<TransformComponent>().position));
+	}
 	int damage = 0;
 	manager.refresh();
 	manager.update();
@@ -108,6 +116,19 @@ void Game::update() {
 			else if (c->getComponent<ColliderComponent>().tag == "lava") {
 				damage += 1;
 				std::cout << "I AM BURNING!" << std::endl;
+			}
+		}
+	}
+	for (auto& c : colliders) {
+		for (auto& e : enemies) {
+			Vector2D enemiePos = e->getComponent<TransformComponent>().position;
+			SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+			SDL_Rect eCol = e->getComponent<ColliderComponent>().collider;
+			if (Collision::AABB(cCol, eCol)) {
+				if (c->getComponent<ColliderComponent>().tag == "wall") {
+					std::cout << "Zombie Wall collsion!" << std::endl;
+					e->getComponent<TransformComponent>().position = enemiePos;
+				}
 			}
 		}
 	}
@@ -159,6 +180,10 @@ void Game::render()
 	{
 		p->draw();
 	}
+	for (auto& e : enemies)
+	{
+		e->draw();
+	}
 	for (auto& p : projectiles)
 	{
 		p->draw();
@@ -169,7 +194,15 @@ void Game::render()
 	}
 	SDL_RenderPresent(renderer);
 }
-
+void Game::spawnZombie(int xpos, int ypos)
+{
+	auto& zombie(manager.addEntity());
+	zombie.addComponent<TransformComponent>(4, xpos, ypos);
+	zombie.addComponent<SpriteComponent>("zombie", false);
+	zombie.addComponent<ColliderComponent>("zombie");
+	zombie.addComponent<KIController>();
+	zombie.addGroup(groupEnemies);
+}
 void Game::clean() {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);

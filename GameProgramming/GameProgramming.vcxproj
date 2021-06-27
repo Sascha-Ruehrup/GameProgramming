@@ -164,6 +164,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="KeyboardController.h" />
+    <ClInclude Include="KIController.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="ProjectileComponent.h" />
     <ClInclude Include="TileComponent.h" />
@@ -179,6 +180,7 @@
     <Image Include="assets\Rambo_SpriteSheet.png" />
     <Image Include="assets\Rambo_Up_and_Walk_2.0.png" />
     <Image Include="assets\wall.png" />
+    <Image Include="assets\zombie.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\40x25.map" />

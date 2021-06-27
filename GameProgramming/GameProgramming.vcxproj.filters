@@ -98,6 +98,9 @@
     <ClInclude Include="ProjectileComponent.h">
       <Filter>Source Files\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="KIController.h">
+      <Filter>Source Files\ECS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Pictures\player.png">
@@ -116,6 +119,9 @@
       <Filter>assets</Filter>
     </Image>
     <Image Include="assets\Rambo_SpriteSheet.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\zombie.png">
       <Filter>assets</Filter>
     </Image>
   </ItemGroup>
