@@ -2,13 +2,14 @@
 #include "SDL.h"
 #include "Components.h"
 #include <vector>
-
+#include "Graph.h"
 #include <cmath>
 
 class PathfindingComponent : public Component
 {
 private:
 	TransformComponent* transform;
+	Graph* graph;
 public:
 
 	Vector2D destination;
@@ -44,6 +45,10 @@ public:
 	
 	void update() override
 	{
+
+		//do new path search after reaching a point or time x
+
+
 		/*int xdir = points[14]->x - transform->position.x;
 		int ydir = points[14]->y - transform->position.y;
 		if (!xdir == 0) {
@@ -61,7 +66,34 @@ public:
 	{
 
 	}
+	int findClosestPoint()
+		// finds the closest point to the zombie in points
+		// returns the points id, can be used to start the search from
+	{
+		int best;
+		float score = INFINITY;
+		transform->position;
+		for (int i = 0; i < points.size(); i++) {
+			float euklid = sqrt(pow(static_cast<float>(points[i]->x - transform->position.x), 2) +
+						pow(static_cast<float>(points[i]->y - transform->position.y), 2));
+			if (euklid < score) {
+				best = i;
+				score = euklid;
+			}
+		}
+		return best;
+		
+	}
 	void breathsearch() {
+		// add all edges to the graph
+		for (int i = 0; i < paths.size(); i++) {
+			std::vector<int>* vec = &paths[i];
+			for (int j = 0; j < vec->size(); j++) {
+				graph->addEdge(j, vec->at(j));
+			}
+		}
+		int startID = findClosestPoint();
+		graph->BFS(startID);
 
 	}
 };

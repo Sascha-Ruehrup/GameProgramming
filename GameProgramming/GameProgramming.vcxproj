@@ -149,6 +149,7 @@
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Graph.h" />
     <ClInclude Include="KeyboardController.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="PathfindingComponent.h" />

@@ -68,7 +68,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	
-	player.addComponent<PathfindingComponent>(map->getPoints());
+	player.addComponent<PathfindingComponent>(map->getPoints(), map->getPaths());
 
 	player.addGroup(groupPlayers);
 	healthbar.addComponent<TransformComponent>(0, 0, 10, 100, 4);
