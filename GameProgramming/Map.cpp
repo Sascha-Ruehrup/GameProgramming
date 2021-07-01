@@ -3,8 +3,12 @@
 #include <fstream>
 #include "ECS.h"
 #include "Components.h"
+#include "PathfindingComponent.h"
+#include <vector>
 
 extern Manager manager;
+std::vector<std::unique_ptr<Vector2D>> points;
+
 
 Map::Map(std::string tID, int ms, int ts) : textureID(tID), mapScale(ms), tileSize(ts)
 {
@@ -47,6 +51,13 @@ void Map::loadMap(std::string path, int sizeX, int sizeY)
 				auto& tcol(manager.addEntity());
 				tcol.addComponent<ColliderComponent>("lava", x * scaledSize, y * scaledSize, scaledSize);
 				tcol.addGroup(Game::groupColliders);
+			}
+			if (c == 'v') {
+				float xpos = static_cast<float>(x * scaledSize);
+				float ypos = static_cast<float>(y * scaledSize);
+				Vector2D* vec = new Vector2D(xpos, ypos);
+				std::unique_ptr<Vector2D> uPtr{ vec };
+				points.emplace_back(std::move(uPtr));
 			}
 			mapFile.ignore();
 		}

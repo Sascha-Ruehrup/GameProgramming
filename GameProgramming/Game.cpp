@@ -63,7 +63,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	map = new Map("terrain", 2, 32);
 	
 	map->loadMap("assets/40x25.map",40,25);
-	player.addComponent<TransformComponent>(4, 400, 320);
+	player.addComponent<TransformComponent>(4, 250, 320);
 	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
