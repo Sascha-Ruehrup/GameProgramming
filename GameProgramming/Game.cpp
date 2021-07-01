@@ -67,6 +67,9 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
+	
+	player.addComponent<PathfindingComponent>(map->getPoints());
+
 	player.addGroup(groupPlayers);
 	healthbar.addComponent<TransformComponent>(0, 0, 10, 100, 4);
 	healthbar.addComponent<SpriteComponent>("healthbar");
@@ -103,7 +106,7 @@ void Game::update() {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 		if (Collision::AABB(cCol, playerCol)) {
 			if (c->getComponent<ColliderComponent>().tag == "wall") {
-				player.getComponent<TransformComponent>().position = playerPos;
+				//player.getComponent<TransformComponent>().position = playerPos;
 			}
 			else if (c->getComponent<ColliderComponent>().tag == "lava") {
 				damage += 1;
