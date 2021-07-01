@@ -122,8 +122,8 @@ void Game::update() {
 	}*/
 	updateHealthbar(damage);
 	health -= damage;
-	camera.x = player.getComponent<TransformComponent>().position.x - 640;
-	camera.y = player.getComponent<TransformComponent>().position.y - 400;
+	camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x) - 640;
+	camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y) - 400;
 	
 	if (camera.x < 0) {
 		camera.x = 0;
@@ -138,8 +138,8 @@ void Game::update() {
 		camera.y = camera.h;
 		
 	}
-	healthbar.getComponent<TransformComponent>().position.x = camera.x;
-	healthbar.getComponent<TransformComponent>().position.y = camera.y;
+	healthbar.getComponent<TransformComponent>().position.x = static_cast<float>(camera.x);
+	healthbar.getComponent<TransformComponent>().position.y = static_cast<float>(camera.y);
 	
 
 }

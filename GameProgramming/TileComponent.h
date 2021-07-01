@@ -22,8 +22,8 @@ public:
 	{
 		texture = Game::assets->getTexture(id);
 
-		position.x = xpos;
-		position.y = ypos;
+		position.x = static_cast<float>(xpos);
+		position.y = static_cast<float>(ypos);
 
 		srcRect.x = srcX;
 		srcRect.y = srcY;
@@ -36,8 +36,8 @@ public:
 
 	void update() override
 	{
-		destRect.x = position.x - Game::camera.x;
-		destRect.y = position.y - Game::camera.y;
+		destRect.x = static_cast<int>(position.x) - Game::camera.x;
+		destRect.y = static_cast<int>(position.y) - Game::camera.y;
 	}
 
 	void draw() override

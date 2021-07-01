@@ -20,8 +20,8 @@ public:
 
 	TransformComponent(int sc, int xpos, int ypos)
 	{
-		position.x = xpos;
-		position.y = ypos;
+		position.x = static_cast<float>(xpos);
+		position.y = static_cast<float>(ypos);
 		scale = sc;
 	}
 
