@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include <iostream>
 #include <vector>
+#include "Map.h"
 
 class AssetManager;
 class ColliderComponent;
@@ -39,6 +40,7 @@ public:
 	};
 private:
 	SDL_Window* window;
+	Map* map;
 };
 
 #endif // !Game_hpp

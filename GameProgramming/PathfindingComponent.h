@@ -89,11 +89,11 @@ public:
 		for (int i = 0; i < paths.size(); i++) {
 			std::vector<int>* vec = &paths[i];
 			for (int j = 0; j < vec->size(); j++) {
-				graph->addEdge(j, vec->at(j));
+				graph->addEdge(j, vec->at(j), 1);
 			}
 		}
 		int startID = findClosestPoint();
-		graph->BFS(startID);
+		graph->Dijkstra(startID);
 
 	}
 };

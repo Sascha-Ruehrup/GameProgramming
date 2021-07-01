@@ -12,3 +12,8 @@ void Graph::addEdge(int src, int dest, int weight) {
     adjLists[src].push_back(dest);
     adjLists[dest].push_back(src);
 }
+
+void Dijkstra(int startVertex)
+{
+
+};
