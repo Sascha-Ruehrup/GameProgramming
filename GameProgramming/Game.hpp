@@ -28,8 +28,8 @@ public:
 	static bool isRunning;
 	static SDL_Rect camera;
 	static Vector2D* playerPosition;
-
 	static AssetManager* assets;
+
 	enum groupLabels : std::size_t
 	{
 		groupMap,
@@ -41,6 +41,7 @@ public:
 	};
 private:
 	SDL_Window* window;
+	
 };
 
 #endif // !Game_hpp
