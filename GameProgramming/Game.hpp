@@ -21,8 +21,9 @@ public:
 	void updateHealthbar(int damage);
 	void spawnZombie(int xpos, int ypos);
 	bool running() { return isRunning; };
+	int createRandomNumber(int lowestValue, int highestValue);
+	void spawnZombieAtRandomPosition();
 
-	
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 	static bool isRunning;
