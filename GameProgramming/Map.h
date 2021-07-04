@@ -13,7 +13,7 @@ public:
 	void addTile(int srcX, int srcY, int xpos, int ypos);
 	void init();
 	std::vector<Vector2D*> getPoints() {return points;}
-	std::vector<std::vector<int>> getPaths() {return paths;}
+	std::vector<std::vector<int>> getPaths();
 private:
 	std::vector<std::vector<int>> paths;
 	std::vector<Vector2D*> points;

@@ -14,6 +14,7 @@ std::vector<std::vector<int>> paths;
 Map::Map(std::string tID, int ms, int ts) : textureID(tID), mapScale(ms), tileSize(ts)
 {
 	scaledSize = ms * ts;
+	init();
 }
 
 Map::~Map() 
@@ -107,6 +108,11 @@ void Map::init() {
 	paths.push_back(vec11);
 	paths.push_back(vec12);
 	paths.push_back(vec13);
+}
+
+vector<std::vector<int>> Map::getPaths()
+{
+	return paths;
 }
 
 void Map::addTile(int srcX, int srcY, int xpos, int ypos)

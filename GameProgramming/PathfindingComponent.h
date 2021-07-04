@@ -10,12 +10,11 @@ class PathfindingComponent : public Component
 private:
 	TransformComponent* transform;
 	Graph* graph;
+	int timer = 0;
 public:
 
 	Vector2D destination;
 	Entity* target;
-	std::vector<std::vector<int>> paths;
-	std::vector<Vector2D*> points;
 	std::vector<Vector2D> pathPoints;
 
 
@@ -26,14 +25,16 @@ public:
 
 	PathfindingComponent(std::vector<Vector2D*> pts, std::vector<std::vector<int>> pa)
 	{
-		points = pts;
-		paths = pa;
+		graph = new Graph(15);
+		graph->points = pts;
+		graph->paths = pa;
+		destination = Vector2D(700.0f, 700.0f);
 	}
 
 	PathfindingComponent(std::vector<Vector2D*> &pts, std::vector<std::vector<int>> pa, Entity* mEntity)
 	{
-		points = pts;
-		paths = pa;
+		graph->points = pts;
+		graph->paths = pa;
 		target = mEntity;
 		destination = mEntity->getComponent<TransformComponent>().position;
 	}
@@ -41,16 +42,29 @@ public:
 	void init() override
 	{
 		transform = &entity->getComponent<TransformComponent>();
+
 	}
 	
 	void update() override
 	{
+		if (timer == 0) {
+			findShortestPath();
+			timer = 10;
+		}
+		else {
+			timer--;
+		}
+		if (!pathPoints.empty()) {
+			destination = pathPoints.front();
+			goToDestination();
+		}
 
 		//do new path search after reaching a point or time x
+	}
 
-
-		/*int xdir = points[14]->x - transform->position.x;
-		int ydir = points[14]->y - transform->position.y;
+	void goToDestination() {
+		int xdir = destination.x - transform->position.x;
+		int ydir = destination.y - transform->position.y;
 		if (!xdir == 0) {
 
 			xdir = xdir / abs(xdir);
@@ -59,41 +73,46 @@ public:
 			ydir = ydir / abs(ydir);
 		}
 		transform->velocity.x = xdir;
-		transform->velocity.y = ydir;*/
+		transform->velocity.y = ydir;
 	}
 
-	void calculatePath(Vector2D dest)
-	{
-
-	}
-	int findClosestPoint()
-		// finds the closest point to the zombie in points
-		// returns the points id, can be used to start the search from
+	int findClosestPoint(Vector2D* position)
+		// finds the closest point in points
+		// returns the points id
 	{
 		int best;
 		float score = INFINITY;
-		transform->position;
-		for (int i = 0; i < points.size(); i++) {
-			float euklid = sqrt(pow(static_cast<float>(points[i]->x - transform->position.x), 2) +
-						pow(static_cast<float>(points[i]->y - transform->position.y), 2));
-			if (euklid < score) {
+		for (int i = 0; i < graph->points.size(); i++) {
+		//float distance = sqrt(pow(static_cast<float>(points[i]->x - transform->position.x), 2) +
+		//			pow(static_cast<float>(points[i]->y - transform->position.y), 2));
+		float distance = length(graph->points[i], position);
+			if (distance < score) {
 				best = i;
-				score = euklid;
+				score = distance;
 			}
 		}
 		return best;
-		
 	}
-	void breathsearch() {
+
+	float length(Vector2D* start, Vector2D* end)
+	{
+		float euklid = sqrt(pow(static_cast<float>(start->x - end->x), 2) +
+			pow(static_cast<float>(start->y - end->y), 2));
+		return euklid;
+	}
+
+	void findShortestPath() {
 		// add all edges to the graph
-		for (int i = 0; i < paths.size(); i++) {
-			std::vector<int>* vec = &paths[i];
+		for (int i = 0; i < graph->paths.size(); i++) {
+			std::vector<int>* vec = &graph->paths[i];
 			for (int j = 0; j < vec->size(); j++) {
-				graph->addEdge(j, vec->at(j), 1);
+				int distance = length(graph->points[i], graph->points[(*vec)[j]]);	//find euklid dist from 2 points of edge
+				graph->addEdge(i, (*vec)[j], distance);
 			}
 		}
-		int startID = findClosestPoint();
-		graph->Dijkstra(startID);
+		int startID = findClosestPoint(&transform->position);	//find closest point to zombie in graph to start from
+		int endID = findClosestPoint(&destination);
 
+		pathPoints = graph->Dijkstra(startID, endID);
 	}
 };
