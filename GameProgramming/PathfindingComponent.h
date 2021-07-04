@@ -14,7 +14,7 @@ private:
 public:
 
 	Vector2D destination;
-	Entity* target;
+	Vector2D latest;
 	std::vector<Vector2D> pathPoints;
 
 
@@ -25,18 +25,17 @@ public:
 
 	PathfindingComponent(std::vector<Vector2D*> pts, std::vector<std::vector<int>> pa)
 	{
-		graph = new Graph(15);
+		graph = new Graph(pts.size());
 		graph->points = pts;
 		graph->paths = pa;
 		destination = Vector2D(700.0f, 700.0f);
 	}
 
-	PathfindingComponent(std::vector<Vector2D*> &pts, std::vector<std::vector<int>> pa, Entity* mEntity)
+	PathfindingComponent(std::vector<Vector2D*> &pts, std::vector<std::vector<int>> pa)
 	{
 		graph->points = pts;
 		graph->paths = pa;
-		target = mEntity;
-		destination = mEntity->getComponent<TransformComponent>().position;
+
 	}
 
 	void init() override
@@ -47,6 +46,7 @@ public:
 	
 	void update() override
 	{
+		//findShortestPath();
 		if (timer == 0) {
 			findShortestPath();
 			timer = 10;
@@ -55,16 +55,34 @@ public:
 			timer--;
 		}
 		if (!pathPoints.empty()) {
-			destination = pathPoints.front();
-			goToDestination();
-		}
+			destination = pathPoints.back();
+			if (destination == latest) {
+				pathPoints.pop_back();
+			}if (!pathPoints.empty()) {
+				if (pathPoints.back() == transform->position) {
+					latest = pathPoints.back();
+					pathPoints.pop_back();
+					std::cout << "popped pathpoints back!" << std::endl;
+				}
+			}/*else {
+				if(targetTransform != nullptr){
+					destination = targetTransform->position;
+				}
 
-		//do new path search after reaching a point or time x
+		}*/
+			
+		}
+		goToDestination();
 	}
 
 	void goToDestination() {
 		int xdir = destination.x - transform->position.x;
 		int ydir = destination.y - transform->position.y;
+		if ((xdir < 5) && (ydir<5)) {
+			transform->speed = 1;
+		}else {
+			transform->speed = 3;
+		}
 		if (!xdir == 0) {
 
 			xdir = xdir / abs(xdir);
@@ -74,6 +92,7 @@ public:
 		}
 		transform->velocity.x = xdir;
 		transform->velocity.y = ydir;
+		
 	}
 
 	int findClosestPoint(Vector2D* position)
@@ -113,6 +132,6 @@ public:
 		int startID = findClosestPoint(&transform->position);	//find closest point to zombie in graph to start from
 		int endID = findClosestPoint(&destination);
 
-		pathPoints = graph->Dijkstra(startID, endID);
+		graph->Dijkstra(startID, endID, pathPoints);
 	}
 };

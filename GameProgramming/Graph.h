@@ -14,7 +14,7 @@ public:
 	Graph(int vertices);
 	void addEdge(int src, int dest, int weight);
 	int minDistance(int dist[], bool sptSet[]);
-	std::vector<Vector2D> Dijkstra(int startVertex, int target);
+	void Dijkstra(int startVertex, int target, std::vector<Vector2D> &result);
 	std::vector<Vector2D*> points;
 	std::vector<std::vector<int>> paths;
 

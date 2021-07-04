@@ -67,6 +67,15 @@ Vector2D& Vector2D::operator/=(const Vector2D& vec)
 {
 	return this->divide(vec);
 }
+bool Vector2D::operator==(const Vector2D& vec)
+{
+	if (this->x - vec.x == 0) {
+		if (this->y - vec.y == 0) {
+			return true;
+		}
+	}
+	return false;
+}
 Vector2D& Vector2D::operator*(const int& i) {
 	this->x *= i;
 	this->y *= i;

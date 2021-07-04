@@ -139,9 +139,11 @@ int Graph::printSolution(int dist[], int n,int parent[])
 // single source shortest path
 // algorithm for a graph represented
 // using adjacency matrix representation
-std::vector<Vector2D> Graph::Dijkstra(int startVertex, int target)
+ void Graph::Dijkstra(int startVertex, int target, std::vector<Vector2D> &result)
 {
-    std::vector<Vector2D> result;
+    //std::vector<Vector2D> result;
+    // std::vector<Vector2D>
+    // 
     // The output array. dist[i]
     // will hold the shortest
     // distance from src to i
@@ -185,6 +187,18 @@ std::vector<Vector2D> Graph::Dijkstra(int startVertex, int target)
         // as processed
         sptSet[u] = true;
 
+        if (u == target) {
+            if ((parent[u] != -1) || (u = startVertex)) {
+                while (u != -1) {
+                    result.push_back((*points[u]));
+                    u = parent[u];
+                }
+            }
+            //return result;
+            return;
+        }
+
+
         // Update dist value of the 
         // adjacent vertices of the
         // picked vertex.
@@ -209,5 +223,5 @@ std::vector<Vector2D> Graph::Dijkstra(int startVertex, int target)
     // distance array
     printSolution(dist, V, parent);
 
-    return result;
+    return;
 }

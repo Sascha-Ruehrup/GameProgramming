@@ -21,7 +21,7 @@ auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
 auto& healthbar(manager.addEntity());
 int health = 100;
-
+auto& enemy(manager.addEntity());
 
 Game::Game()
 {}
@@ -68,13 +68,18 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	
-	player.addComponent<PathfindingComponent>(map->getPoints(), map->getPaths());
+	
 
 	player.addGroup(groupPlayers);
 	healthbar.addComponent<TransformComponent>(0, 0, 10, 100, 4);
 	healthbar.addComponent<SpriteComponent>("healthbar");
 	healthbar.addGroup(groupUI);
 
+	enemy.addComponent<TransformComponent>(4, 700, 700);
+	enemy.addComponent<SpriteComponent>("player", true);
+	enemy.addGroup(groupPlayers);
+	
+	player.addComponent<PathfindingComponent>(map->getPoints(), map->getPaths());
 	
 
 }
