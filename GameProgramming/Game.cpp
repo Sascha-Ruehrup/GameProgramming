@@ -106,10 +106,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	wave.addComponent<UILabel>(500, 10, "Default", "arial", black);
 	wave.addGroup(groupUI);
 
-	enemy.addComponent<TransformComponent>(4, 700, 700);
-	enemy.addComponent<SpriteComponent>("player", true);
-	enemy.addComponent<PathfindingComponent>(map->getPoints(), map->getPaths());
-	enemy.addGroup(groupPlayers);
+	
 	
 	
 
@@ -164,7 +161,7 @@ void Game::update() {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 		if (Collision::AABB(cCol, playerCol)) {
 			if (c->getComponent<ColliderComponent>().tag == "wall") {
-				//player.getComponent<TransformComponent>().position = playerPos;
+				player.getComponent<TransformComponent>().position = playerPos;
 			}
 			else if (c->getComponent<ColliderComponent>().tag == "lava") {
 				damage += 1;
@@ -195,6 +192,7 @@ void Game::update() {
 			}
 		}*/
 	}
+	
 	for (auto& p : projectiles)
 	{
 		for (auto& e : enemies) {
@@ -276,8 +274,8 @@ void Game::spawnZombie(int xpos, int ypos)
 	zombie.addComponent<TransformComponent>(4, xpos, ypos);
 	zombie.addComponent<SpriteComponent>("zombie", false);
 	zombie.addComponent<ColliderComponent>("zombie");
-	zombie.addComponent<KIController>();
 	zombie.addComponent<HealthManagementComponent>(2);
+	zombie.addComponent<PathfindingComponent>(map->getPoints(), map->getPaths());
 	zombie.addGroup(groupEnemies);
 }
 void Game::clean() {
