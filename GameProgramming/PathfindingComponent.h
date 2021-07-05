@@ -4,6 +4,7 @@
 #include <vector>
 #include "Graph.h"
 #include <cmath>
+#include "Game.hpp"
 
 class PathfindingComponent : public Component
 {
@@ -15,6 +16,7 @@ public:
 
 	Vector2D destination;
 	Vector2D latest;
+	bool targetPlayer = true;
 	std::vector<Vector2D> pathPoints;
 
 
@@ -28,15 +30,15 @@ public:
 		graph = new Graph(pts.size());
 		graph->points = pts;
 		graph->paths = pa;
-		destination = Vector2D(700.0f, 700.0f);
+		destination = *Game::playerPosition;
 	}
 
-	PathfindingComponent(std::vector<Vector2D*> &pts, std::vector<std::vector<int>> pa)
+	/*PathfindingComponent(std::vector<Vector2D*> &pts, std::vector<std::vector<int>> pa)
 	{
 		graph->points = pts;
 		graph->paths = pa;
 
-	}
+	}*/
 
 	void init() override
 	{
@@ -64,14 +66,15 @@ public:
 					pathPoints.pop_back();
 					std::cout << "popped pathpoints back!" << std::endl;
 				}
-			}/*else {
-				if(targetTransform != nullptr){
-					destination = targetTransform->position;
+			}else {
+				if(targetPlayer){
+					destination = *Game::playerPosition;
 				}
 
-		}*/
+			}
 			
 		}
+
 		goToDestination();
 	}
 

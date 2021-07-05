@@ -16,12 +16,15 @@ SDL_Rect Game::camera = { 0,0,1280, 800 };
 AssetManager* Game::assets = new AssetManager(&manager);
 bool Game::isRunning = false;
 
+Vector2D* Game::playerPosition = new Vector2D(700.0f, 1000.0f);
+
 
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
 auto& healthbar(manager.addEntity());
 int health = 100;
 auto& enemy(manager.addEntity());
+
 
 Game::Game()
 {}
@@ -67,19 +70,19 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
-	
-	
-
 	player.addGroup(groupPlayers);
+
+	
+	
 	healthbar.addComponent<TransformComponent>(0, 0, 10, 100, 4);
 	healthbar.addComponent<SpriteComponent>("healthbar");
 	healthbar.addGroup(groupUI);
 
 	enemy.addComponent<TransformComponent>(4, 700, 700);
 	enemy.addComponent<SpriteComponent>("player", true);
+	enemy.addComponent<PathfindingComponent>(map->getPoints(), map->getPaths());
 	enemy.addGroup(groupPlayers);
 	
-	player.addComponent<PathfindingComponent>(map->getPoints(), map->getPaths());
 	
 
 }
@@ -101,8 +104,11 @@ void Game::handleEvents()
 }
 void Game::update() {
 
+
+
 	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
 	Vector2D playerPos = player.getComponent<TransformComponent>().position;
+	Game::playerPosition = &playerPos;
 	int damage = 0;
 	manager.refresh();
 	manager.update();

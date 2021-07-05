@@ -22,12 +22,12 @@ public:
 	void updateHealthbar(int damage);
 
 	bool running() { return isRunning; };
-
 	
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 	static bool isRunning;
 	static SDL_Rect camera;
+	static Vector2D* playerPosition;
 
 	static AssetManager* assets;
 	enum groupLabels : std::size_t
