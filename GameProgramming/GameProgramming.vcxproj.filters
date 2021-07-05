@@ -116,6 +116,9 @@
     <ClInclude Include="Graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponComponent.h">
+      <Filter>Source Files\ECS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Pictures\player.png">

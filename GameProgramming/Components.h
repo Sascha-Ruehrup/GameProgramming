@@ -10,3 +10,4 @@
 #include "HealthManagementComponent.h"
 #include "UILabel.h"
 #include "PathfindingComponent.h"
+#include "WeaponComponent.h"

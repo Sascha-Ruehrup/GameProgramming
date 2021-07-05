@@ -177,6 +177,7 @@
     <ClInclude Include="Texturemanager.h" />
     <ClInclude Include="UILabel.h" />
     <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="WeaponComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Pictures\player.png" />

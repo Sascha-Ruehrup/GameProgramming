@@ -44,14 +44,30 @@ public:
 			Animation shootUp = Animation(6, 4, 50);
 			Animation shootDown = Animation(5, 3, 50);
 
-			animations.emplace("Idle", idle);
-			animations.emplace("WalkSideways", walkSideways);
-			animations.emplace("WalkUp", walkUp);
-			animations.emplace("WalkDown", walkDown);
-			animations.emplace("ShootSideways", shootSideways);
-			animations.emplace("ShootUp", shootUp);
-			animations.emplace("ShootDown", shootDown);
-			play("Idle");
+			Animation rocketLauncherWalkSidways = Animation(7, 10, 50);
+			Animation rocketLauncherIdle = Animation(8, 4, 50);
+			Animation rocketLauncherWalkUp = Animation(9, 4, 50);
+			Animation rocketLauncherWalkDown = Animation(10, 3, 50);
+			Animation rocketLauncherShootSideways = Animation(11, 4, 50);
+			Animation rocketLauncherShootUp = Animation(12, 4, 50);
+			Animation rocketLauncherShootDown = Animation(13, 3, 50);
+
+			animations.emplace("RifleIdle", idle);
+			animations.emplace("RifleWalkSideways", walkSideways);
+			animations.emplace("RifleWalkUp", walkUp);
+			animations.emplace("RifleWalkDown", walkDown);
+			animations.emplace("RifleShootSideways", shootSideways);
+			animations.emplace("RifleShootUp", shootUp);
+			animations.emplace("RifleShootDown", shootDown);
+
+			animations.emplace("RocketLauncherWalkSideways", rocketLauncherWalkSidways);
+			animations.emplace("RocketLauncherIdle", rocketLauncherIdle);
+			animations.emplace("RocketLauncherWalkUp", rocketLauncherWalkUp);
+			animations.emplace("RocketLauncherWalkDown", rocketLauncherWalkDown);
+			animations.emplace("RocketLauncherShootSideways", rocketLauncherShootSideways);
+			animations.emplace("RocketLauncherShootUp", rocketLauncherShootUp);
+			animations.emplace("RocketLauncherShootDown", rocketLauncherShootDown);
+			play("RifleIdle");
 		}
 		setTex(id);
 	}

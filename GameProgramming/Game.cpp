@@ -21,7 +21,7 @@ bool gameStarted = false;
 bool firstUpdate = true;
 bool drawGameOver = false;
 Vector2D* Game::playerPosition = new Vector2D(0.0f,0.0f);
-
+int Game::playerWeapon = 0;
 
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
@@ -83,11 +83,14 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->addTexture("player", "assets/Rambo_SpriteSheet.png");
 	assets->addTexture("zombie", "assets/zombie.png");
 	assets->addTexture("healthbar", "assets/healthbar.png");
-	assets->addTexture("projectileSideways", "assets/projectilesideways.png");
-	assets->addTexture("projectileUp", "assets/projectileup.png");
+	assets->addTexture("RifleProjectileSideways", "assets/projectilesideways.png");
+	assets->addTexture("RifleProjectileUp", "assets/projectileup.png");
 	assets->addTexture("rifle", "assets/rifle.png");
 	assets->addTexture("startButton", "assets/startbutton.png");
 	assets->addTexture("gameOver", "assets/gameover.png");
+	assets->addTexture("RocketLauncherProjectileSideways", "assets/rocketProjectileSideways.png");
+	assets->addTexture("RocketLauncherProjectileUp", "assets/rocketProjectileUp.png");
+	assets->addTexture("RocketLauncherProjectileDown", "assets/rocketProjectileDown.png");
 	
 
 	assets->addFont("arial", "assets/SHOWG.ttf", 48);
@@ -98,6 +101,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
 	player.addComponent<TransformComponent>(4, 250, 320);
 	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
+	player.addComponent<WeaponComponent>(Game::rocketLauncher);
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addComponent<HealthManagementComponent>(100);
@@ -210,6 +214,8 @@ void Game::update() {
 		Vector2D playerPos = player.getComponent<TransformComponent>().position;
 
 		Game::playerPosition = &playerPos;
+		Game::playerWeapon = player.getComponent<WeaponComponent>().weapon;
+
 		std::map<std::size_t, Vector2D>enemiesPositions;
 		for (auto& e : enemies) {
 			enemiesPositions.insert(std::make_pair(e->ID, e->getComponent<TransformComponent>().position));

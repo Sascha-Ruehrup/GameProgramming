@@ -35,6 +35,7 @@ public:
 	static SDL_Rect camera;
 	static Vector2D* playerPosition;
 	static AssetManager* assets;
+	static int playerWeapon;
 
 	enum groupLabels : std::size_t
 	{
@@ -44,6 +45,11 @@ public:
 		groupColliders,
 		groupProjectiles,
 		groupUI
+	};
+	enum weapons : int
+	{
+		rifle,
+		rocketLauncher
 	};
 private:
 	SDL_Window* window;

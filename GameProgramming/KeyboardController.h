@@ -9,103 +9,209 @@ public:
 	char lastKeyClicked = 'd';
 	TransformComponent* transform;
 	SpriteComponent* sprite;
+	bool weaponReady = true;
+	KeyboardController(){}
 	void init() override
 	{
 		transform = &entity->getComponent<TransformComponent>();
 		sprite = &entity->getComponent<SpriteComponent>();
+		
 	}
 
 	void update() override
 	{
 		Vector2D playerPosition = transform->position;
-		if (Game::event.type == SDL_KEYDOWN)
-		{
-			switch (Game::event.key.keysym.sym)
+		int weapon = Game::playerWeapon;
+		switch(weapon){
+		case Game::rocketLauncher:
+			if (Game::event.type == SDL_KEYDOWN)
 			{
-			case SDLK_w:
-				transform->velocity.y = -1;
-				sprite->play("WalkUp");
-				lastKeyClicked = 'w';
-				break;
-			case SDLK_a:
-				transform->velocity.x = -1;
-				sprite->play("WalkSideways");
-				sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
-				lastKeyClicked = 'a';
-				break;
-			case SDLK_d:
-				transform->velocity.x = 1;
-				sprite->play("WalkSideways");
-				sprite->spriteFlip = SDL_FLIP_NONE;
-				lastKeyClicked = 'd';
-				break;
-			case SDLK_s:
-				transform->velocity.y = 1;
-				sprite->play("WalkDown");
-				lastKeyClicked = 's';
-				break;
-			case SDLK_SPACE:
-				switch (lastKeyClicked)
+				switch (Game::event.key.keysym.sym)
 				{
-				case 'w':
-					Game::assets->createProjectile(playerPosition + Vector2D(52, -30), Vector2D(0, -3), 1000, 8, "projectileUp", SDL_FLIP_NONE );
-					sprite->play("ShootUp");
+				case SDLK_w:
+					transform->velocity.y = -1;
+					sprite->play("RocketLauncherWalkUp");
+					lastKeyClicked = 'w';
 					break;
-				case 'a':
-					Game::assets->createProjectile(playerPosition + Vector2D(-30, 52), Vector2D(-3, 0), 1000, 8, "projectileSideways", SDL_FLIP_HORIZONTAL);
-					sprite->play("ShootSideways");
+				case SDLK_a:
+					transform->velocity.x = -1;
+					sprite->play("RocketLauncherWalkSideways");
+					sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
+					lastKeyClicked = 'a';
 					break;
-				case 's':
-					Game::assets->createProjectile(playerPosition + Vector2D(32, 62), Vector2D(0, 3), 1000, 8, "projectileUp", SDL_FLIP_VERTICAL);
-					sprite->play("ShootDown");
+				case SDLK_d:
+					transform->velocity.x = 1;
+					sprite->play("RocketLauncherWalkSideways");
+					sprite->spriteFlip = SDL_FLIP_NONE;
+					lastKeyClicked = 'd';
 					break;
-				case 'd':
-					Game::assets->createProjectile(playerPosition + Vector2D(96, 52), Vector2D(3, 0), 1000, 8, "projectileSideways", SDL_FLIP_NONE);
-					sprite->play("ShootSideways");
+				case SDLK_s:
+					transform->velocity.y = 1;
+					sprite->play("RocketLauncherWalkDown");
+					lastKeyClicked = 's';
+					break;
+				case SDLK_SPACE:
+					if (weaponReady) {
+
+
+						switch (lastKeyClicked)
+						{
+						case 'w':
+							Game::assets->createProjectile(Game::rocketLauncher, playerPosition + Vector2D(52, -30), Vector2D(0, -3), 1000, 8, "RocketLauncherProjectileUp", SDL_FLIP_NONE);
+							sprite->play("RocketLauncherShootUp");
+							break;
+						case 'a':
+							Game::assets->createProjectile(Game::rocketLauncher, playerPosition + Vector2D(-30, 52), Vector2D(-3, 0), 1000, 8, "RocketLauncherProjectileSideways", SDL_FLIP_HORIZONTAL);
+							sprite->play("RocketLauncherShootSideways");
+							break;
+						case 's':
+							Game::assets->createProjectile(Game::rocketLauncher, playerPosition + Vector2D(32, 62), Vector2D(0, 3), 1000, 8, "RocketLauncherProjectileUp", SDL_FLIP_VERTICAL);
+							sprite->play("RocketLauncherShootDown");
+							break;
+						case 'd':
+							Game::assets->createProjectile(Game::rocketLauncher, playerPosition + Vector2D(96, 52), Vector2D(3, 0), 1000, 8, "RocketLauncherProjectileSideways", SDL_FLIP_NONE);
+							sprite->play("RocketLauncherShootSideways");
+							break;
+						default:
+							break;
+						}
+						weaponReady = false;
+					}
+					break;
+				case SDLK_ESCAPE:
+					Game::isRunning = false;
+				default:
+					break;
+				}
+			}
+			if (Game::event.type == SDL_KEYUP) {
+				switch (Game::event.key.keysym.sym)
+				{
+				case SDLK_w:
+					if (transform->velocity.y < 0) {
+						transform->velocity.y = 0;
+						sprite->play("RocketLauncherIdle");
+					}
+					break;
+				case SDLK_a:
+					if (transform->velocity.x < 0) {
+						transform->velocity.x = 0;
+						sprite->play("RocketLauncherIdle");
+					}
+					break;
+				case SDLK_d:
+					if (transform->velocity.x > 0) {
+						transform->velocity.x = 0;
+						sprite->play("RocketLauncherIdle");
+					}
+					break;
+				case SDLK_s:
+					if (transform->velocity.y > 0) {
+						transform->velocity.y = 0;
+						sprite->play("RocketLauncherIdle");
+					}
+					break;
+				case SDLK_SPACE:
+					sprite->play("RocketLauncherIdle");
+					weaponReady = true;
 					break;
 				default:
 					break;
 				}
-				break;
-			case SDLK_ESCAPE:
-				Game::isRunning = false;
-			default:
-				break;
 			}
-		}
-		if (Game::event.type == SDL_KEYUP) {
-			switch (Game::event.key.keysym.sym)
+			break;
+		case Game::rifle:
+			if (Game::event.type == SDL_KEYDOWN)
 			{
-			case SDLK_w:
-				if (transform->velocity.y < 0) {
-					transform->velocity.y = 0;
-					sprite->play("Idle");
+				switch (Game::event.key.keysym.sym)
+				{
+				case SDLK_w:
+					transform->velocity.y = -1;
+					sprite->play("RifleWalkUp");
+					lastKeyClicked = 'w';
+					break;
+				case SDLK_a:
+					transform->velocity.x = -1;
+					sprite->play("RifleWalkSideways");
+					sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
+					lastKeyClicked = 'a';
+					break;
+				case SDLK_d:
+					transform->velocity.x = 1;
+					sprite->play("RifleWalkSideways");
+					sprite->spriteFlip = SDL_FLIP_NONE;
+					lastKeyClicked = 'd';
+					break;
+				case SDLK_s:
+					transform->velocity.y = 1;
+					sprite->play("RifleWalkDown");
+					lastKeyClicked = 's';
+					break;
+				case SDLK_SPACE:
+					switch (lastKeyClicked)
+					{
+					case 'w':
+						Game::assets->createProjectile(Game::rifle, playerPosition + Vector2D(52, -30), Vector2D(0, -3), 1000, 8, "RifleProjectileUp", SDL_FLIP_NONE);
+						sprite->play("RifleShootUp");
+						break;
+					case 'a':
+						Game::assets->createProjectile(Game::rifle, playerPosition + Vector2D(-30, 52), Vector2D(-3, 0), 1000, 8, "RifleProjectileSideways", SDL_FLIP_HORIZONTAL);
+						sprite->play("RifleShootSideways");
+						break;
+					case 's':
+						Game::assets->createProjectile(Game::rifle, playerPosition + Vector2D(32, 62), Vector2D(0, 3), 1000, 8, "RifleProjectileUp", SDL_FLIP_VERTICAL);
+						sprite->play("RifleShootDown");
+						break;
+					case 'd':
+						Game::assets->createProjectile(Game::rifle, playerPosition + Vector2D(96, 52), Vector2D(3, 0), 1000, 8, "RifleProjectileSideways", SDL_FLIP_NONE);
+						sprite->play("RifleShootSideways");
+						break;
+					default:
+						break;
+					}
+					break;
+				case SDLK_ESCAPE:
+					Game::isRunning = false;
+				default:
+					break;
 				}
-				break;
-			case SDLK_a:
-				if (transform->velocity.x < 0) {
-					transform->velocity.x = 0;
-					sprite->play("Idle");
-				}
-				break;
-			case SDLK_d:
-				if (transform->velocity.x > 0) {
-					transform->velocity.x = 0;
-					sprite->play("Idle");
-				}
-				break;
-			case SDLK_s:
-				if (transform->velocity.y > 0) {
-					transform->velocity.y = 0;
-					sprite->play("Idle");
-				}
-				break;
-			case SDLK_SPACE:
-				//sprite->play("Idle");
-				break;
-			default:
-				break;
 			}
+			if (Game::event.type == SDL_KEYUP) {
+				switch (Game::event.key.keysym.sym)
+				{
+				case SDLK_w:
+					if (transform->velocity.y < 0) {
+						transform->velocity.y = 0;
+						sprite->play("RifleIdle");
+					}
+					break;
+				case SDLK_a:
+					if (transform->velocity.x < 0) {
+						transform->velocity.x = 0;
+						sprite->play("RifleIdle");
+					}
+					break;
+				case SDLK_d:
+					if (transform->velocity.x > 0) {
+						transform->velocity.x = 0;
+						sprite->play("RifleIdle");
+					}
+					break;
+				case SDLK_s:
+					if (transform->velocity.y > 0) {
+						transform->velocity.y = 0;
+						sprite->play("RifleIdle");
+					}
+					break;
+				case SDLK_SPACE:
+					//sprite->play("Idle");
+					break;
+				default:
+					break;
+				}
+			}
+			break;
 		}
+		
 	}
 };

@@ -12,7 +12,7 @@ public:
 	AssetManager(Manager* man);
 	~AssetManager();
 
-	void createProjectile(Vector2D pos, Vector2D vel, int range, int speed, std::string id, SDL_RendererFlip flip);
+	void createProjectile(int weapon, Vector2D pos, Vector2D vel, int range, int speed, std::string id, SDL_RendererFlip flip);
 
 
 
