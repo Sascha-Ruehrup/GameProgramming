@@ -17,6 +17,8 @@ SDL_Rect Game::camera = { 0,0,1280, 800 };
 
 AssetManager* Game::assets = new AssetManager(&manager);
 bool Game::isRunning = false;
+bool gameStarted = false;
+bool firstUpdate = true;
 Vector2D* Game::playerPosition = new Vector2D(0.0f,0.0f);
 
 
@@ -26,6 +28,7 @@ auto& healthbar(manager.addEntity());
 auto& weapon(manager.addEntity());
 auto& score(manager.addEntity());
 auto& wave(manager.addEntity());
+auto& startbutton(manager.addEntity());
 
 int health = 100;
 int scoreValue = 0;
@@ -34,7 +37,8 @@ int waveZombieCounter = 30;
 Vector2D* spawnPoints[] = { new Vector2D(0.0f,700.0f), new Vector2D(1200.0f, 0.0f),new Vector2D(2500.0f,700.0f) };
 
 int timer = 60;
-
+int xMousepos = 0;
+int yMousepos = 0;
 
 Game::Game()
 {}
@@ -80,6 +84,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->addTexture("projectileSideways", "assets/projectilesideways.png");
 	assets->addTexture("projectileUp", "assets/projectileup.png");
 	assets->addTexture("rifle", "assets/rifle.png");
+	assets->addTexture("startButton", "assets/startbutton.png");
 	
 
 	assets->addFont("arial", "assets/SHOWG.ttf", 48);
@@ -101,10 +106,12 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	weapon.addComponent<SpriteComponent>("rifle");
 	weapon.addGroup(groupUI);
 	SDL_Color black = { 0,0,0,255 };
-	score.addComponent<UILabel>(500, 60, "Default", "arial", black);
+	score.addComponent<UILabel>(500, 60, "Score: ", "arial", black);
 	score.addGroup(groupUI);
-	wave.addComponent<UILabel>(500, 10, "Default", "arial", black);
+	wave.addComponent<UILabel>(500, 10, "Wave: ", "arial", black);
 	wave.addGroup(groupUI);
+	startbutton.addComponent<TransformComponent>(376, 384, 32, 128, 4);
+	startbutton.addComponent<SpriteComponent>("startButton");
 
 	
 	
@@ -119,124 +126,150 @@ auto& projectiles(manager.getGroup(Game::groupProjectiles));
 auto& enemies(manager.getGroup(Game::groupEnemies));
 void Game::handleEvents()
 {
+	
 	SDL_PollEvent(&event);
 	switch (event.type) {
 		case SDL_QUIT:
 			isRunning = false;
+			break;
+		case SDL_MOUSEMOTION:
+			if (!gameStarted) {
+				xMousepos = Game::event.motion.x;
+				yMousepos = Game::event.motion.y;
+			}
+			break;
+		case SDL_MOUSEBUTTONUP:
+			if (!gameStarted) {
+				if (xMousepos > 376 && xMousepos < 888 && yMousepos > 384 && yMousepos < 512) {
+					std::cout << "Mouse clicked" << std::endl;
+					gameStarted = true;
+				}
+			}
 			break;
 		default:
 			break;
 	}
 }
 void Game::update() {
-	timer--;
-	if (waveZombieCounter <= 0) {
-		waveValue++;
-		waveZombieCounter = 30 + waveValue * 5;
-	}
-	if (timer == 0) {
-		spawnZombieAtRandomPosition();
-		if (180 - waveValue * 5 >= 60) {
-			timer = 180 - waveValue * 5;
-		}
-		else
-		{
-			timer = 60;
+	if (!gameStarted) {
+		if (firstUpdate) {
+			manager.refresh();
+			manager.update();
+			firstUpdate = false;
 		}
 		
 	}
-	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
-	Vector2D playerPos = player.getComponent<TransformComponent>().position;
-
-	Game::playerPosition = &playerPos;
-	std::map<std::size_t, Vector2D>enemiesPositions;
-	for (auto& e : enemies) {
-		enemiesPositions.insert(std::make_pair(e->ID, e->getComponent<TransformComponent>().position));
-	}
-	int damage = 0;
-	manager.refresh();
-	manager.update();
-
-	for (auto& c : colliders) {
-		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-		if (Collision::AABB(cCol, playerCol)) {
-			if (c->getComponent<ColliderComponent>().tag == "wall") {
-				player.getComponent<TransformComponent>().position = playerPos;
-			}
-			else if (c->getComponent<ColliderComponent>().tag == "lava") {
-				damage += 1;
-				health -= damage;
-				if (health >= 1) {
-					player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
-					std::cout << "I AM BURNING!" << std::endl;
-				}
-				else if(health == 0)
-				{
-					//TODO
-					//endGame();
-				}
-				
-			}
-		}
-	}
-	for (auto& c : colliders) {
-		/*for (auto& e : enemies) {
-			Vector2D enemiePos = enemiesPositions.find(e->ID);
-			SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-			SDL_Rect eCol = e->getComponent<ColliderComponent>().collider;
-			if (Collision::AABB(cCol, eCol)) {
-				if (c->getComponent<ColliderComponent>().tag == "wall") {
-					std::cout << "Zombie Wall collsion!" << std::endl;
-					e->getComponent<TransformComponent>().position = enemiePos;
-				}
-			}
-		}*/
-	}
-	
-	for (auto& p : projectiles)
+	else
 	{
-		for (auto& e : enemies) {
-			if (Collision::AABB(e->getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
+		timer--;
+		if (waveZombieCounter <= 0) {
+			waveValue++;
+			waveZombieCounter = 30 + waveValue * 5;
+		}
+		if (timer == 0) {
+			spawnZombieAtRandomPosition();
+			if (180 - waveValue * 5 >= 60) {
+				timer = 180 - waveValue * 5;
+			}
+			else
 			{
-				e->getComponent<HealthManagementComponent>().maximumHealth -= 1;
-				if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
-					e->destroy();
-					waveZombieCounter--;
-					scoreValue++;
-				}
-				p->destroy();
+				timer = 60;
+			}
 
+		}
+		SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+		Vector2D playerPos = player.getComponent<TransformComponent>().position;
+
+		Game::playerPosition = &playerPos;
+		std::map<std::size_t, Vector2D>enemiesPositions;
+		for (auto& e : enemies) {
+			enemiesPositions.insert(std::make_pair(e->ID, e->getComponent<TransformComponent>().position));
+		}
+		int damage = 0;
+		manager.refresh();
+		manager.update();
+
+		for (auto& c : colliders) {
+			SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+			if (Collision::AABB(cCol, playerCol)) {
+				if (c->getComponent<ColliderComponent>().tag == "wall") {
+					player.getComponent<TransformComponent>().position = playerPos;
+				}
+				else if (c->getComponent<ColliderComponent>().tag == "lava") {
+					damage += 1;
+					health -= damage;
+					if (health >= 1) {
+						player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
+						std::cout << "I AM BURNING!" << std::endl;
+					}
+					else if (health == 0)
+					{
+						
+						//TODO
+						//endGame();
+					}
+
+				}
 			}
 		}
-		
-	}
-	std::stringstream sv, wv;
-	sv << "SCORE: " << scoreValue;
-	score.getComponent<UILabel>().setLabelText(sv.str(), "arial");
-	wv << "WAVE: " << waveValue;
-	wave.getComponent<UILabel>().setLabelText(wv.str(), "arial");
-	updateHealthbar(damage);
-	camera.x = player.getComponent<TransformComponent>().position.x - 640;
-	camera.y = player.getComponent<TransformComponent>().position.y - 400;
-	
-	if (camera.x < 0) {
-		camera.x = 0;
-	}
-	if (camera.y < 0) {
-		camera.y = 0;
-	}
-	if (camera.x > camera.w) {
-		camera.x = camera.w;
-	}
-	if (camera.y > camera.h) {
-		camera.y = camera.h;
-		
-	}
-	healthbar.getComponent<TransformComponent>().position.x = camera.x;
-	healthbar.getComponent<TransformComponent>().position.y = camera.y;
-	weapon.getComponent<TransformComponent>().position.x = camera.x;
-	weapon.getComponent<TransformComponent>().position.y = camera.y + 600;
+		for (auto& c : colliders) {
+			/*for (auto& e : enemies) {
+				Vector2D enemiePos = enemiesPositions.find(e->ID);
+				SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+				SDL_Rect eCol = e->getComponent<ColliderComponent>().collider;
+				if (Collision::AABB(cCol, eCol)) {
+					if (c->getComponent<ColliderComponent>().tag == "wall") {
+						std::cout << "Zombie Wall collsion!" << std::endl;
+						e->getComponent<TransformComponent>().position = enemiePos;
+					}
+				}
+			}*/
+		}
 
+		for (auto& p : projectiles)
+		{
+			for (auto& e : enemies) {
+				if (Collision::AABB(e->getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
+				{
+					e->getComponent<HealthManagementComponent>().maximumHealth -= 1;
+					if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
+						e->destroy();
+						waveZombieCounter--;
+						scoreValue++;
+					}
+					p->destroy();
+
+				}
+			}
+
+		}
+		std::stringstream sv, wv;
+		sv << "SCORE: " << scoreValue;
+		score.getComponent<UILabel>().setLabelText(sv.str(), "arial");
+		wv << "WAVE: " << waveValue;
+		wave.getComponent<UILabel>().setLabelText(wv.str(), "arial");
+		updateHealthbar(damage);
+		camera.x = player.getComponent<TransformComponent>().position.x - 640;
+		camera.y = player.getComponent<TransformComponent>().position.y - 400;
+
+		if (camera.x < 0) {
+			camera.x = 0;
+		}
+		if (camera.y < 0) {
+			camera.y = 0;
+		}
+		if (camera.x > camera.w) {
+			camera.x = camera.w;
+		}
+		if (camera.y > camera.h) {
+			camera.y = camera.h;
+
+		}
+		healthbar.getComponent<TransformComponent>().position.x = camera.x;
+		healthbar.getComponent<TransformComponent>().position.y = camera.y;
+		weapon.getComponent<TransformComponent>().position.x = camera.x;
+		weapon.getComponent<TransformComponent>().position.y = camera.y + 600;
+	}
 }
 void Game::updateHealthbar(int damage) {
 	healthbar.getComponent<SpriteComponent>().srcRect.w -= damage;
@@ -246,26 +279,33 @@ void Game::updateHealthbar(int damage) {
 void Game::render()
 {
 	SDL_RenderClear(renderer);
-	for (auto& t : tiles)
-	{
-		t->draw();
-	}
-	for (auto& p : players)
-	{
-		p->draw();
-	}
-	for (auto& e : enemies)
-	{
-		e->draw();
-	}
-	for (auto& p : projectiles)
-	{
-		p->draw();
-	}
-	for (auto& ui : UI)
-	{
-		ui->draw();
-	}
+		for (auto& t : tiles)
+		{
+			t->draw();
+		}
+		for (auto& p : players)
+		{
+			p->draw();
+		}
+		for (auto& e : enemies)
+		{
+			e->draw();
+		}
+		for (auto& p : projectiles)
+		{
+			p->draw();
+		}
+		for (auto& ui : UI)
+		{
+			ui->draw();
+		}
+		if (!gameStarted) {
+			startbutton.draw();
+		}
+		
+	
+	
+	
 	SDL_RenderPresent(renderer);
 }
 void Game::spawnZombie(int xpos, int ypos)
@@ -293,4 +333,5 @@ void Game::spawnZombieAtRandomPosition() {
 	Vector2D* spawnPos = spawnPoints[index];
 	Game::spawnZombie(spawnPos->x, spawnPos->y);
 }
+
 

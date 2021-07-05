@@ -1,6 +1,6 @@
 #include "Game.hpp"
-
 Game* game = nullptr;
+
 int main(int argc, char* args[]) {
 	const int fps = 60;
 	const int frameDelay = 1000 / fps;
@@ -12,6 +12,7 @@ int main(int argc, char* args[]) {
 	game->init("BOXHEAD", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, false);
 	while (game->running())
 	{
+		
 		frameStart = SDL_GetTicks();
 		game->handleEvents();
 		game->update();

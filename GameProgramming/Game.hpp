@@ -7,6 +7,8 @@
 #include <vector>
 #include "Vector2D.h"
 #include "Map.h"
+#include <SDL_ttf.h>
+
 
 class AssetManager;
 class ColliderComponent;
