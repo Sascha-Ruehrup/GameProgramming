@@ -87,3 +87,32 @@ Somit haben wir nun die Möglichkeit in unsere png beliebig viele Animationen zu
 ### 25.06.2021
 <p align=justify>Da der Spieler bald schießen können wird, wurde schon einmal eine Shooting- Animation erstellt, welche beim drücken der Leertaste angezeigt wird. Außerdem besitzt der Spieler jetzt eine Animation für das Runterlaufen.
 </p>
+
+### 26.06.2021
+<p align=justify>Damit der Spieler schießen kann wurde im Keyboardcontroller ein weiteres Event hinzugefügt. Dieses Event ist das drücken der Leertaste, welche den Spieler schießen lässt. Je nachdem, welcher Key zuletzt gedrückt wurde (w, a, s, d) wird eine bestimmte Schussanimation abgespielt und ein Projektil fliegt in die jeweilige Richtung. Hierfür fragen wir über sein switch- case ab, welche Taste zuletzt gedrückt wurde um die Blickrichtung herauszufinden.
+</p>
+
+### 01.07.2021
+<p align=justify>Damit unsere Zombies den Weg zum Spieler an den Wänden vorbei finden, haben wir in einer veränderten Map an jeder Ecke, die angesteuert werden soll, eine Markierung in der Map- Datei eingefügt. Diese Markierung wird beim einlesen der Map dann die jeweils dazugehörigen Koordinaten speichern. Außerdem haben wir jetzt eine neue Komponente, die den Zombies zugeteilt werden kann. Sie soll dem Zombie den Weg zum Spieler berechnen und seine velocity dementsprechend ändern.
+Für den nächsten Schritt werden alle traversierbaren Kanten im Programm hinterlegt. Zu jedem Punkt auf der Karte, den die Zombies ansteuern können, gibt es einen Vector mit den IDs der anderen Punkte, die vom Ausgangspunkt direkt erreichbar sind. Als Beispiel gehört zum Punkt mit der ID = 3 der Vector <1,2,7,14>. Später wird ein Pathfinding- Algorithmus mit den Informationen einen Graph erstellen, durch den der Zombie dann den Weg zum Spieler findet.
+</p>
+  
+### 02.07.2021
+<p align=justify> Heute gab es nur ein paar kleine Änderungen, die im nächsten Update überarbeitet und verändert werden. Für den Graphen gibt es eine eigene Klasse, in der die Kanten und Punkte eingetragen werden. Auperdem hat der PathfindingComponent eine Funktion, um den zu der aufrufenden Entity den naheliegendsten Punkt des Graphen ausfindig zu machen.  
+</p>
+  
+### 04.07.2021
+<p align=justify>Nun ist es wichtig dem Spieler ein User Interface anzuzeigen. Das einzige Element unserer UIGroup ist bis jetzt die Healthbar gewesen. Nun wurde ein Bild der aktuell ausgewählten Waffe hinzugefügt und ein Scorewert. Dieser erhöht sich bei jedem Kill an einem Zombie. Hierfür haben wir jedem Zombie eine HealthManagementComponent zugewiesen mit einem maxHealth- Wert von 2. Bei jeder Kollision einer abgeschossenen Patrone mit einem Zombie verliert der jeweilige Zombie ein Leben. Folglich hält jeder Zombie zwei Schüsse aus bis er stirbt. All dies wird in der update- Funktion der game.cpp bearbeitet. Zuerst wird die Kollision zwischen Projektilen und Zombies abgefragt. Liegt eine Kollision vor wird der maxHealth- Wert des Zombies minus eins gerechnet. Danch wird überprüft, ob der maxHealth- Wert <= 0 ist. Ist dies der Fall, wird die entity des Zombies destroyed und der score- Wert um eins erhöht. Außerdem wird das Projektil ebenfalls destroyed. 
+
+Generell wurde die UI angezeigt indem wir die jeweiligen Texturen oder Texte immer relativ zu cameraposition auf dem Bildschirm anzeigen, damit sie egal wohin der Player sich bewegt auf dem Bildschirm an der selben Stelle sind. Für den score musste außerdem die SDL_ttf- Bibliothek mit eingebunden werden um Texte auf dem Bildschirm anzeigen lassen zu können. Hierfür wurde die Component UILabel hinzugefügt, welche aus einem Font und einem gewünschten Text eine Textur macht, welche gerendert werden kann. Wir haben uns für den Score und die Anzeige in welcher Welle man sich befindet für den Font "Showcard Gothic" entschieden. 
+
+Die gerade erwähnten Wellen geben während des Spielverlaufs vor wie schnell die Zombies spawnen und werden von der Anzahl immer größer. Nach jeder Welle die man geschafft hat wird die nächste Welle um fünf Zombies größer. Außerdem wird in der ersten Welle alle 180 (3 Sekunden) ein Zombie gespawned. Nach jeder Wave wird diese Framezahl um 5 verringert, was dafür sorgt, dass die Zombies immer schneller spawnen. In welcher Welle man sich aktuell befindet sieht man durch ein weiters UI- Element über dem Score.
+
+Für den PathfindingComponent verwenden wir den Dijkstra-Algorithmus um den kürzesten Weg auf dem Graphen zu finden. Der Code dazu wurde von "https://www.geeksforgeeks.org/c-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/" übernommen, für unser Projekt um eine Abbruchbedingung im Fall, dass das Ziel erreicht ist, erweitert, und in unser Projekt integriert. Einige Probleme bei der initialisierung der Map- Klasse wurden behoben und der Zombie kann den Pfad zwar richtig berechnen, hat aber das Problem, dass er diesen nicht komplett ablaufen kann. 
+</p>
+  
+### 06.07.2021
+<p align=justify>Der Zombie kann jetzt den gesamten Path ablaufen. Vorher konnte er nicht über den ersten Punkt im Path hinaus, weil der Algorithmus ihn immer zurückgeschickt hat, sobald er sich von ihm entfernt hat. An dieser Stelle kann der Code vielleicht noch etwas optimiert werden, aber er erfüllt auf jeden Fall seine Aufgabe. Es gab vorher ebenfalls ein Problem, bei dem der Zombie manche Punkte nicht exakt erreichen konnte. Da der Zombie standardmäßig einen Speed von 3 hat, kann es vorkommen, dass er sich zuerst zwei Pixel zu weit oben und im anderen Schritt einen Pixel zu weit unten vom Ziel befindet. Unsere Lösung dafür ist es, dass der Zombie seine Geschwindigkeit verringert, sobald er sich nah genug an den Ziel- Koordinaten befindet. So kann er den Punkt erreichen und sich auf den Weg zum nächsten machen.
+Der Spieler kann dem Zombie als Target übergeben werden, sodass der Zombie ihn verfolgt.
+</p>
+  
