@@ -19,6 +19,7 @@ AssetManager* Game::assets = new AssetManager(&manager);
 bool Game::isRunning = false;
 bool gameStarted = false;
 bool firstUpdate = true;
+bool drawGameOver = false;
 Vector2D* Game::playerPosition = new Vector2D(0.0f,0.0f);
 
 
@@ -29,6 +30,7 @@ auto& weapon(manager.addEntity());
 auto& score(manager.addEntity());
 auto& wave(manager.addEntity());
 auto& startbutton(manager.addEntity());
+auto& gameOver(manager.addEntity());
 
 int health = 100;
 int scoreValue = 0;
@@ -85,6 +87,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->addTexture("projectileUp", "assets/projectileup.png");
 	assets->addTexture("rifle", "assets/rifle.png");
 	assets->addTexture("startButton", "assets/startbutton.png");
+	assets->addTexture("gameOver", "assets/gameover.png");
 	
 
 	assets->addFont("arial", "assets/SHOWG.ttf", 48);
@@ -113,6 +116,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	wave.addGroup(groupUI);
 	startbutton.addComponent<TransformComponent>(376, 384, 32, 128, 4);
 	startbutton.addComponent<SpriteComponent>("startButton");
+	gameOver.addComponent<TransformComponent>(376, 220, 64, 256, 2);
+	gameOver.addComponent<SpriteComponent>("gameOver");
 
 }
 
@@ -169,6 +174,7 @@ void Game::newGame() {
 
 	timer = 180;
 
+	drawGameOver = false;
 	gameStarted = true;
 }
 
@@ -226,6 +232,7 @@ void Game::update() {
 					}
 					else if (health <= 0)
 					{
+						drawGameOver = true;
 						std::cout << " Tot" << std::endl;
 						gameStarted = false;
 						//TODO
@@ -246,6 +253,7 @@ void Game::update() {
 				}
 				else if (health <= 0)
 				{
+					drawGameOver = true;
 					std::cout << " Tot" << std::endl;
 					gameStarted = false;
 					//TODO
@@ -298,6 +306,8 @@ void Game::update() {
 		weapon.getComponent<TransformComponent>().position.y = camera.y + 600;
 		startbutton.getComponent<TransformComponent>().position.x = camera.x + 376;
 		startbutton.getComponent<TransformComponent>().position.y = camera.y + 384;
+		gameOver.getComponent<TransformComponent>().position.x = camera.x + 376;
+		gameOver.getComponent<TransformComponent>().position.y = camera.y + 220;
 	}
 }
 void Game::updateHealthbar(int damage) {
@@ -331,10 +341,9 @@ void Game::render()
 		if (!gameStarted) {
 			startbutton.draw();
 		}
-		else {
-			//startbutton.destroy();
+		if (drawGameOver) {
+			gameOver.draw();
 		}
-		
 	
 	
 	
