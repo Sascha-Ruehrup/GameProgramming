@@ -92,6 +92,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	map = new Map("terrain", 2, 32);
 	
 	map->loadMap("assets/40x25.map",40,25);
+
 	player.addComponent<TransformComponent>(4, 250, 320);
 	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
@@ -113,11 +114,9 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	startbutton.addComponent<TransformComponent>(376, 384, 32, 128, 4);
 	startbutton.addComponent<SpriteComponent>("startButton");
 
-	
-	
-	
-
 }
+
+
 auto& tiles(manager.getGroup(Game::groupMap));
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
@@ -142,7 +141,7 @@ void Game::handleEvents()
 			if (!gameStarted) {
 				if (xMousepos > 376 && xMousepos < 888 && yMousepos > 384 && yMousepos < 512) {
 					std::cout << "Mouse clicked" << std::endl;
-					gameStarted = true;
+					newGame();
 				}
 			}
 			break;
@@ -150,6 +149,30 @@ void Game::handleEvents()
 			break;
 	}
 }
+
+void Game::newGame() {
+	for (auto& e : enemies) {
+		e->destroy();
+	}
+	player.getComponent<TransformComponent>().position.x = 250;
+	player.getComponent<TransformComponent>().position.y = 320;
+
+	int playerHealth = 100;
+	player.getComponent<HealthManagementComponent>().maximumHealth = playerHealth;
+	health = playerHealth;
+	healthbar.getComponent<SpriteComponent>().srcRect.w = playerHealth;
+	healthbar.getComponent<TransformComponent>().width = playerHealth;
+
+	scoreValue = 0;
+	waveValue = 1;
+	waveZombieCounter = 30;
+
+	timer = 180;
+
+	gameStarted = true;
+}
+
+
 void Game::update() {
 	if (!gameStarted) {
 		if (firstUpdate) {
@@ -185,7 +208,6 @@ void Game::update() {
 		for (auto& e : enemies) {
 			enemiesPositions.insert(std::make_pair(e->ID, e->getComponent<TransformComponent>().position));
 		}
-		int damage = 0;
 		manager.refresh();
 		manager.update();
 
@@ -196,15 +218,16 @@ void Game::update() {
 					player.getComponent<TransformComponent>().position = playerPos;
 				}
 				else if (c->getComponent<ColliderComponent>().tag == "lava") {
-					damage += 1;
-					health -= damage;
+					health -= 1;
+					updateHealthbar(1);
 					if (health >= 1) {
 						player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
 						std::cout << "I AM BURNING!" << std::endl;
 					}
-					else if (health == 0)
+					else if (health <= 0)
 					{
-						
+						std::cout << " Tot" << std::endl;
+						gameStarted = false;
 						//TODO
 						//endGame();
 					}
@@ -212,18 +235,23 @@ void Game::update() {
 				}
 			}
 		}
-		for (auto& c : colliders) {
-			/*for (auto& e : enemies) {
-				Vector2D enemiePos = enemiesPositions.find(e->ID);
-				SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-				SDL_Rect eCol = e->getComponent<ColliderComponent>().collider;
-				if (Collision::AABB(cCol, eCol)) {
-					if (c->getComponent<ColliderComponent>().tag == "wall") {
-						std::cout << "Zombie Wall collsion!" << std::endl;
-						e->getComponent<TransformComponent>().position = enemiePos;
-					}
+		for (auto& e : enemies) {
+			if (Collision::AABB(e->getComponent<ColliderComponent>().collider, playerCol))
+			{
+				health -= 1;
+				updateHealthbar(1);
+				if (health >= 1) {
+					player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
+					std::cout << "I AM BURNING!" << std::endl;
 				}
-			}*/
+				else if (health <= 0)
+				{
+					std::cout << " Tot" << std::endl;
+					gameStarted = false;
+					//TODO
+					//endGame();
+				}
+			}
 		}
 
 		for (auto& p : projectiles)
@@ -248,7 +276,6 @@ void Game::update() {
 		score.getComponent<UILabel>().setLabelText(sv.str(), "arial");
 		wv << "WAVE: " << waveValue;
 		wave.getComponent<UILabel>().setLabelText(wv.str(), "arial");
-		updateHealthbar(damage);
 		camera.x = player.getComponent<TransformComponent>().position.x - 640;
 		camera.y = player.getComponent<TransformComponent>().position.y - 400;
 
@@ -269,6 +296,8 @@ void Game::update() {
 		healthbar.getComponent<TransformComponent>().position.y = camera.y;
 		weapon.getComponent<TransformComponent>().position.x = camera.x;
 		weapon.getComponent<TransformComponent>().position.y = camera.y + 600;
+		startbutton.getComponent<TransformComponent>().position.x = camera.x + 376;
+		startbutton.getComponent<TransformComponent>().position.y = camera.y + 384;
 	}
 }
 void Game::updateHealthbar(int damage) {
@@ -301,6 +330,9 @@ void Game::render()
 		}
 		if (!gameStarted) {
 			startbutton.draw();
+		}
+		else {
+			//startbutton.destroy();
 		}
 		
 	
