@@ -196,15 +196,15 @@ void Game::update() {
 					player.getComponent<TransformComponent>().position = playerPos;
 				}
 				else if (c->getComponent<ColliderComponent>().tag == "lava") {
-					damage += 1;
-					health -= damage;
+					health -= 1;
+					updateHealthbar(1);
 					if (health >= 1) {
 						player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
 						std::cout << "I AM BURNING!" << std::endl;
 					}
-					else if (health == 0)
+					else if (health <= 0)
 					{
-						
+						gameStarted = false;
 						//TODO
 						//endGame();
 					}
@@ -248,7 +248,6 @@ void Game::update() {
 		score.getComponent<UILabel>().setLabelText(sv.str(), "arial");
 		wv << "WAVE: " << waveValue;
 		wave.getComponent<UILabel>().setLabelText(wv.str(), "arial");
-		updateHealthbar(damage);
 		camera.x = player.getComponent<TransformComponent>().position.x - 640;
 		camera.y = player.getComponent<TransformComponent>().position.y - 400;
 
