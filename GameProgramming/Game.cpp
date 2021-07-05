@@ -19,6 +19,7 @@ AssetManager* Game::assets = new AssetManager(&manager);
 bool Game::isRunning = false;
 Vector2D* Game::playerPosition = new Vector2D(0.0f,0.0f);
 
+
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
 auto& healthbar(manager.addEntity());
@@ -86,9 +87,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	map = new Map("terrain", 2, 32);
 	
 	map->loadMap("assets/40x25.map",40,25);
-	//Game::spawnZombie(500, 200);
-	
-	player.addComponent<TransformComponent>(4, 400, 250);
+	player.addComponent<TransformComponent>(4, 250, 320);
 	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
@@ -106,6 +105,13 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	score.addGroup(groupUI);
 	wave.addComponent<UILabel>(500, 10, "Default", "arial", black);
 	wave.addGroup(groupUI);
+
+	enemy.addComponent<TransformComponent>(4, 700, 700);
+	enemy.addComponent<SpriteComponent>("player", true);
+	enemy.addComponent<PathfindingComponent>(map->getPoints(), map->getPaths());
+	enemy.addGroup(groupPlayers);
+	
+	
 
 }
 auto& tiles(manager.getGroup(Game::groupMap));
@@ -158,7 +164,7 @@ void Game::update() {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 		if (Collision::AABB(cCol, playerCol)) {
 			if (c->getComponent<ColliderComponent>().tag == "wall") {
-				player.getComponent<TransformComponent>().position = playerPos;
+				//player.getComponent<TransformComponent>().position = playerPos;
 			}
 			else if (c->getComponent<ColliderComponent>().tag == "lava") {
 				damage += 1;

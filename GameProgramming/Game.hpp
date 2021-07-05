@@ -6,6 +6,8 @@
 #include <iostream>
 #include <vector>
 #include "Vector2D.h"
+#include "Map.h"
+
 class AssetManager;
 class ColliderComponent;
 class Game {
@@ -42,7 +44,7 @@ public:
 	};
 private:
 	SDL_Window* window;
-	
+	Map* map;
 };
 
 #endif // !Game_hpp

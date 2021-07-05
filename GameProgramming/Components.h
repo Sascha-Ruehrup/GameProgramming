@@ -9,3 +9,4 @@
 #include "KIController.h"
 #include "HealthManagementComponent.h"
 #include "UILabel.h"
+#include "PathfindingComponent.h"
