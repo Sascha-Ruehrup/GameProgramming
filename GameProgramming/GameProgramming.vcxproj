@@ -118,13 +118,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\SDL2\include;C:\SDL2_image-2.0.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SDL2_ttf-2.0.15\include;C:\SDL2\include;C:\SDL2_image-2.0.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SDL2_image-2.0.5\lib\x64;C:\SDL2\lib\x64;C:\vsLib\SDL2-2.0.14\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\SDL2_ttf-2.0.15\lib\x64;C:\SDL2_image-2.0.5\lib\x64;C:\SDL2\lib\x64;C:\vsLib\SDL2-2.0.14\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -164,8 +164,10 @@
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="HealthManagementComponent.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="KeyboardController.h" />
+    <ClInclude Include="KIController.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="PathfindingComponent.h" />
     <ClInclude Include="ProjectileComponent.h" />
@@ -173,6 +175,7 @@
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="Texturemanager.h" />
+    <ClInclude Include="UILabel.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +185,7 @@
     <Image Include="assets\Rambo_SpriteSheet.png" />
     <Image Include="assets\Rambo_Up_and_Walk_2.0.png" />
     <Image Include="assets\wall.png" />
+    <Image Include="assets\zombie.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\40x25.map" />

@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include <iostream>
 #include <vector>
+#include "Vector2D.h"
 #include "Map.h"
 
 class AssetManager;
@@ -20,20 +21,23 @@ public:
 	void render();
 	void clean();
 	void updateHealthbar(int damage);
-
+	void spawnZombie(int xpos, int ypos);
 	bool running() { return isRunning; };
-	
+	int createRandomNumber(int lowestValue, int highestValue);
+	void spawnZombieAtRandomPosition();
+
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 	static bool isRunning;
 	static SDL_Rect camera;
 	static Vector2D* playerPosition;
-
 	static AssetManager* assets;
+
 	enum groupLabels : std::size_t
 	{
 		groupMap,
 		groupPlayers,
+		groupEnemies,
 		groupColliders,
 		groupProjectiles,
 		groupUI

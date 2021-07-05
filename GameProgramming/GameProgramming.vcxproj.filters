@@ -101,6 +101,15 @@
     <ClInclude Include="ProjectileComponent.h">
       <Filter>Source Files\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="KIController.h">
+      <Filter>Source Files\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthManagementComponent.h">
+      <Filter>Source Files\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="UILabel.h">
+      <Filter>Source Files\ECS</Filter>
+    </ClInclude>
     <ClInclude Include="PathfindingComponent.h">
       <Filter>Source Files\ECS</Filter>
     </ClInclude>
@@ -125,6 +134,9 @@
       <Filter>assets</Filter>
     </Image>
     <Image Include="assets\Rambo_SpriteSheet.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\zombie.png">
       <Filter>assets</Filter>
     </Image>
   </ItemGroup>

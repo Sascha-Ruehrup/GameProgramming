@@ -12,6 +12,7 @@ class Manager;
 
 
 using ComponentID = std::size_t;
+using EntityID = std::size_t;
 using Group = std::size_t;
 
 inline ComponentID getNewComponentTypeID()
@@ -19,7 +20,10 @@ inline ComponentID getNewComponentTypeID()
 	static ComponentID lastID = 0u;
 	return lastID++;
 }
-
+inline EntityID getNewEntityID() {
+	static EntityID lastID = 0u;
+	return lastID++;
+}
 template <typename T> inline ComponentID getComponentTypeID() noexcept
 {
 	static ComponentID typeID = getNewComponentTypeID();
@@ -58,7 +62,10 @@ private:
 	GroupBitset groupBitset;
 
 public:
-	Entity(Manager& mManager) : manager(mManager) {}
+	std::size_t ID;
+	Entity(Manager& mManager) : manager(mManager) {
+		ID = getNewEntityID();
+	}
 	void update()
 	{
 		for (auto& c : components) c->update();
@@ -148,7 +155,9 @@ public:
 	void AddToGroup(Entity* mEntity, Group mGroup) {
 		groupedEntities[mGroup].emplace_back(mEntity);
 	}
-
+	std::size_t getIndex(Entity* mEntity) {
+		return mEntity->ID;
+		}
 	std::vector<Entity*>& getGroup(Group mGroup)
 	{
 		return groupedEntities[mGroup];
