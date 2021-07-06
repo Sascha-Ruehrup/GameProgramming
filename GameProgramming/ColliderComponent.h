@@ -2,7 +2,7 @@
 #include <string>
 #include "SDL.h"
 #include "Components.h"
-
+#include "Collision.h"
 class ColliderComponent : public Component
 {
 public:

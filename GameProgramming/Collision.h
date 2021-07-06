@@ -17,6 +17,6 @@ public:
 
 	static bool CircleRect(const Circle& circleA, const SDL_Rect& recB);
 	static bool CircleRect(const ColliderComponent& circleA, const ColliderComponent& recB);
-
+	static double distanceSquared(int x1, int y1, int x2, int y2);
 
 };

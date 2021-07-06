@@ -69,7 +69,7 @@ bool Collision::CircleRect(const Circle& cirA, const SDL_Rect& recB)
 	//If the shapes have not collided
 	return false;
 }
-double distanceSquared(int x1, int y1, int x2, int y2)
+double Collision::distanceSquared(int x1, int y1, int x2, int y2)
 {
 	int deltaX = x2 - x1;
 	int deltaY = y2 - y1;

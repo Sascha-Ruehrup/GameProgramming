@@ -44,6 +44,7 @@ public:
 		groupEnemies,
 		groupColliders,
 		groupProjectiles,
+		groupExplosions,
 		groupUI
 	};
 	enum weapons : int

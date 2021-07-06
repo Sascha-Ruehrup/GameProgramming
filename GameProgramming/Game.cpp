@@ -39,6 +39,7 @@ int waveZombieCounter = 30;
 Vector2D* spawnPoints[] = { new Vector2D(0.0f,700.0f), new Vector2D(1200.0f, 0.0f),new Vector2D(2500.0f,700.0f) };
 
 int timer = 60;
+int explosionTimer = 10;
 int xMousepos = 0;
 int yMousepos = 0;
 
@@ -91,7 +92,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->addTexture("RocketLauncherProjectileSideways", "assets/rocketProjectileSideways.png");
 	assets->addTexture("RocketLauncherProjectileUp", "assets/rocketProjectileUp.png");
 	assets->addTexture("RocketLauncherProjectileDown", "assets/rocketProjectileDown.png");
-	
+	assets->addTexture("explosion", "assets/explosion.png");
 
 	assets->addFont("arial", "assets/SHOWG.ttf", 48);
 	assets->addFont("arial", "assets/SHOWG.ttf", 64);
@@ -132,6 +133,7 @@ auto& colliders(manager.getGroup(Game::groupColliders));
 auto& UI(manager.getGroup(Game::groupUI));
 auto& projectiles(manager.getGroup(Game::groupProjectiles));
 auto& enemies(manager.getGroup(Game::groupEnemies));
+auto& explosions(manager.getGroup(Game::groupExplosions));
 void Game::handleEvents()
 {
 	
@@ -194,6 +196,7 @@ void Game::update() {
 	}
 	else
 	{
+		explosionTimer--;
 		timer--;
 		if (waveZombieCounter <= 0) {
 			waveValue++;
@@ -273,17 +276,41 @@ void Game::update() {
 			for (auto& e : enemies) {
 				if (Collision::AABB(e->getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
 				{
-					e->getComponent<HealthManagementComponent>().maximumHealth -= 1;
-					if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
-						e->destroy();
-						waveZombieCounter--;
-						scoreValue++;
+					if (p->getComponent<WeaponComponent>().weapon == Game::rifle) {
+						e->getComponent<HealthManagementComponent>().maximumHealth -= 1;
+						if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
+							e->destroy();
+							waveZombieCounter--;
+							scoreValue++;
+						}
 					}
+					else if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {
+						int xpos = p->getComponent<TransformComponent>().position.x;
+						int ypos = p->getComponent<TransformComponent>().position.y;
+						auto& explosion(manager.addEntity());
+						explosion.addComponent<TransformComponent>(xpos - 80, ypos - 80, 32, 32, 6);
+						explosion.addComponent<SpriteComponent>("explosion");
+						explosion.addComponent<ColliderComponent>("explosion", xpos, ypos, 96, true);
+						explosion.addGroup(groupExplosions);
+						explosionTimer = 10;
+						std::cout << "Explosion!" << std::endl;
+					}
+					
 					p->destroy();
 
 				}
 			}
 
+		}
+		for (auto& ex : explosions) {
+			for (auto& e : enemies) {
+				if (Collision::CircleRect(ex->getComponent<ColliderComponent>().colliderCircle, e->getComponent<ColliderComponent>().collider)) {
+					e->destroy();
+					waveZombieCounter--;
+					scoreValue++;
+
+				}
+			}
 		}
 		std::stringstream sv, wv;
 		sv << "SCORE: " << scoreValue;
@@ -339,6 +366,14 @@ void Game::render()
 		for (auto& p : projectiles)
 		{
 			p->draw();
+		}
+		for (auto& ex : explosions) {
+			if (explosionTimer > 0) {
+				ex->draw();
+			}
+			else {
+				ex->destroy();
+			}
 		}
 		for (auto& ui : UI)
 		{
