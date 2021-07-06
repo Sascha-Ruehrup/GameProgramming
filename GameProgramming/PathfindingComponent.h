@@ -64,7 +64,6 @@ public:
 				if (pathPoints.back() == transform->position) {
 					latest = pathPoints.back();
 					pathPoints.pop_back();
-					std::cout << "popped pathpoints back!" << std::endl;
 				}
 			}else {
 				if(targetPlayer){

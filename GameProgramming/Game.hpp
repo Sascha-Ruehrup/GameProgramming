@@ -7,11 +7,13 @@
 #include <vector>
 #include "Vector2D.h"
 #include "Map.h"
+#include "AudioManager.h"
 #include <SDL_ttf.h>
 
 
 class AssetManager;
 class ColliderComponent;
+class AudioManager;
 class Game {
 public:
 	Game();
@@ -38,6 +40,7 @@ public:
 	static AssetManager* assets;
 	static int playerWeapon;
 	static int rocketAmmunition;
+	static AudioManager* mAudioMgr;
 
 	enum groupLabels : std::size_t
 	{

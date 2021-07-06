@@ -5,6 +5,7 @@
 #include "Vector2D.h"
 #include "Collision.h"
 #include "AssetManager.h"
+#include "AudioManager.h"
 #include <map>
 #include <sstream>
 #include <random>
@@ -16,6 +17,8 @@ SDL_Event Game::event;
 SDL_Rect Game::camera = { 0,0,1280, 800 };
 
 AssetManager* Game::assets = new AssetManager(&manager);
+AudioManager* Game::mAudioMgr = new AudioManager();
+
 bool Game::isRunning = false;
 bool gameStarted = false;
 bool firstUpdate = true;
@@ -49,7 +52,10 @@ Game::Game()
 {}
 
 Game::~Game()
-{}
+{
+	AudioManager::Release();
+	mAudioMgr = NULL;
+}
 
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
@@ -173,6 +179,12 @@ void Game::newGame() {
 	for (auto& e : enemies) {
 		e->destroy();
 	}
+	for (auto& i : items) {
+		i->destroy();
+	}
+	for (auto& p : projectiles) {
+		p->destroy();
+	}
 	player.getComponent<TransformComponent>().position.x = 250;
 	player.getComponent<TransformComponent>().position.y = 320;
 
@@ -190,6 +202,9 @@ void Game::newGame() {
 	waveZombieCounter = 30;
 
 	timer = 180;
+
+	mAudioMgr->playMusic("Playboi Carti - Magnolia.wav");
+	Mix_VolumeMusic(2);
 
 	drawGameOver = false;
 	gameStarted = true;
@@ -289,7 +304,6 @@ void Game::update() {
 				updateHealth(1);
 				if (health >= 1) {
 					player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
-					std::cout << "I AM BURNING!" << std::endl;
 				}
 				else if (health <= 0)
 				{
@@ -315,6 +329,8 @@ void Game::update() {
 							e->destroy();
 							waveZombieCounter--;
 							scoreValue++;
+
+							mAudioMgr->playSFX("Wilhelm_Scream.wav");
 						}
 					}
 					else if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {
@@ -367,6 +383,7 @@ void Game::update() {
 					waveZombieCounter--;
 					scoreValue++;
 
+					mAudioMgr->playSFX("Wilhelm_Scream.wav");
 				}
 			}
 		}
