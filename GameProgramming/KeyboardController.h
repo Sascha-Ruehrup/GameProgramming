@@ -50,6 +50,12 @@ public:
 					sprite->play("RocketLauncherWalkDown");
 					lastKeyClicked = 's';
 					break;
+				case SDLK_e:
+					Game::playerWeapon = Game::rifle;
+					break;
+				case SDLK_q:
+					Game::playerWeapon = Game::rifle;
+					break;
 				case SDLK_SPACE:
 					if (weaponReady) {
 
@@ -147,6 +153,12 @@ public:
 					sprite->play("RifleWalkDown");
 					lastKeyClicked = 's';
 					break;
+				case SDLK_e:
+					Game::playerWeapon = Game::rocketLauncher;
+					break;
+				case SDLK_q:
+					Game::playerWeapon = Game::rocketLauncher;
+					break;
 				case SDLK_SPACE:
 					switch (lastKeyClicked)
 					{
@@ -204,7 +216,7 @@ public:
 					}
 					break;
 				case SDLK_SPACE:
-					//sprite->play("Idle");
+					sprite->play("RifleIdle");
 					break;
 				default:
 					break;

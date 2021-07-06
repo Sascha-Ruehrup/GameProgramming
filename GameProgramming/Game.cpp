@@ -87,6 +87,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->addTexture("RifleProjectileSideways", "assets/projectilesideways.png");
 	assets->addTexture("RifleProjectileUp", "assets/projectileup.png");
 	assets->addTexture("rifle", "assets/rifle.png");
+	assets->addTexture("rocketLauncher", "assets/rocketLauncher.png");
 	assets->addTexture("startButton", "assets/startbutton.png");
 	assets->addTexture("gameOver", "assets/gameover.png");
 	assets->addTexture("RocketLauncherProjectileSideways", "assets/rocketProjectileSideways.png");
@@ -102,7 +103,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
 	player.addComponent<TransformComponent>(4, 250, 320);
 	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
-	player.addComponent<WeaponComponent>(Game::rocketLauncher);
+	//player.addComponent<WeaponComponent>(Game::rocketLauncher);
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addComponent<HealthManagementComponent>(100);
@@ -186,6 +187,12 @@ void Game::newGame() {
 
 
 void Game::update() {
+	if (Game::playerWeapon == 0) {
+		weapon.getComponent<SpriteComponent>().setTex("rifle");
+	}
+	else if (Game::playerWeapon == 1) {
+		weapon.getComponent<SpriteComponent>().setTex("rocketLauncher");
+	}
 	if (!gameStarted) {
 		if (firstUpdate) {
 			manager.refresh();
@@ -217,7 +224,7 @@ void Game::update() {
 		Vector2D playerPos = player.getComponent<TransformComponent>().position;
 
 		Game::playerPosition = &playerPos;
-		Game::playerWeapon = player.getComponent<WeaponComponent>().weapon;
+		//Game::playerWeapon = player.getComponent<WeaponComponent>().weapon;
 
 		std::map<std::size_t, Vector2D>enemiesPositions;
 		for (auto& e : enemies) {
@@ -276,7 +283,7 @@ void Game::update() {
 			for (auto& e : enemies) {
 				if (Collision::AABB(e->getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
 				{
-					if (p->getComponent<WeaponComponent>().weapon == Game::rifle) {
+					if (Game::playerWeapon == Game::rifle) {
 						e->getComponent<HealthManagementComponent>().maximumHealth -= 1;
 						if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
 							e->destroy();
@@ -284,7 +291,7 @@ void Game::update() {
 							scoreValue++;
 						}
 					}
-					else if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {
+					else if (Game::playerWeapon == Game::rocketLauncher) {
 						int xpos = p->getComponent<TransformComponent>().position.x;
 						int ypos = p->getComponent<TransformComponent>().position.y;
 						auto& explosion(manager.addEntity());
