@@ -11,8 +11,10 @@
 class UILabel : public Component
 {
 public:
-	UILabel(int xpos, int ypos, std::string text, std::string font, SDL_Color& color) : labelText(text), labelFont(font), textColor(color)
+	std::string tag;
+	UILabel(std::string t, int xpos, int ypos, std::string text, std::string font, SDL_Color& color) : labelText(text), labelFont(font), textColor(color)
 	{
+		tag = t;
 		position.x = xpos;
 		position.y = ypos;
 

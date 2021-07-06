@@ -11,3 +11,4 @@
 #include "UILabel.h"
 #include "PathfindingComponent.h"
 #include "WeaponComponent.h"
+#include "ItemComponent.h"

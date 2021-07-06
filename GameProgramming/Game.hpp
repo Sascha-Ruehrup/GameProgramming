@@ -23,11 +23,12 @@ public:
 	void update();
 	void render();
 	void clean();
-	void updateHealthbar(int damage);
+	void updateHealth(int damage);
 	void spawnZombie(int xpos, int ypos);
 	bool running() { return isRunning; };
 	int createRandomNumber(int lowestValue, int highestValue);
 	void spawnZombieAtRandomPosition();
+	void dropItem(int probability, int xpos, int ypos);
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
@@ -36,6 +37,7 @@ public:
 	static Vector2D* playerPosition;
 	static AssetManager* assets;
 	static int playerWeapon;
+	static int rocketAmmunition;
 
 	enum groupLabels : std::size_t
 	{
@@ -43,6 +45,7 @@ public:
 		groupPlayers,
 		groupEnemies,
 		groupColliders,
+		groupItems,
 		groupProjectiles,
 		groupExplosions,
 		groupUI

@@ -22,6 +22,7 @@ bool firstUpdate = true;
 bool drawGameOver = false;
 Vector2D* Game::playerPosition = new Vector2D(0.0f,0.0f);
 int Game::playerWeapon = 0;
+int Game::rocketAmmunition;
 
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
@@ -31,6 +32,7 @@ auto& score(manager.addEntity());
 auto& wave(manager.addEntity());
 auto& startbutton(manager.addEntity());
 auto& gameOver(manager.addEntity());
+auto& rocketLauncherAmmunitionDisplay(manager.addEntity());
 
 int health = 100;
 int scoreValue = 0;
@@ -94,9 +96,10 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->addTexture("RocketLauncherProjectileUp", "assets/rocketProjectileUp.png");
 	assets->addTexture("RocketLauncherProjectileDown", "assets/rocketProjectileDown.png");
 	assets->addTexture("explosion", "assets/explosion.png");
+	assets->addTexture("itemHealth", "assets/healthItem.png");
+	assets->addTexture("itemRockets", "assets/rocketItem.png");
 
-	assets->addFont("arial", "assets/SHOWG.ttf", 48);
-	assets->addFont("arial", "assets/SHOWG.ttf", 64);
+	assets->addFont("showg48", "assets/SHOWG.ttf", 48);
 	map = new Map("terrain", 2, 32);
 	
 	map->loadMap("assets/40x25.map",40,25);
@@ -116,10 +119,12 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	weapon.addComponent<SpriteComponent>("rifle");
 	weapon.addGroup(groupUI);
 	SDL_Color black = { 0,0,0,255 };
-	score.addComponent<UILabel>(500, 60, "Score: ", "arial", black);
+	score.addComponent<UILabel>("score", 500, 60, "Score: ", "showg48", black);
 	score.addGroup(groupUI);
-	wave.addComponent<UILabel>(500, 10, "Wave: ", "arial", black);
+	wave.addComponent<UILabel>("wave", 500, 10, "Wave: ", "showg48", black);
 	wave.addGroup(groupUI);
+	rocketLauncherAmmunitionDisplay.addComponent<UILabel>("rlAmmo",0, 520, "ROCKETS: ", "showg48", black);
+	rocketLauncherAmmunitionDisplay.addGroup(groupUI);
 	startbutton.addComponent<TransformComponent>(376, 384, 32, 128, 4);
 	startbutton.addComponent<SpriteComponent>("startButton");
 	gameOver.addComponent<TransformComponent>(376, 220, 64, 256, 2);
@@ -135,6 +140,8 @@ auto& UI(manager.getGroup(Game::groupUI));
 auto& projectiles(manager.getGroup(Game::groupProjectiles));
 auto& enemies(manager.getGroup(Game::groupEnemies));
 auto& explosions(manager.getGroup(Game::groupExplosions));
+auto& items(manager.getGroup(Game::groupItems));
+
 void Game::handleEvents()
 {
 	
@@ -174,6 +181,9 @@ void Game::newGame() {
 	health = playerHealth;
 	healthbar.getComponent<SpriteComponent>().srcRect.w = playerHealth;
 	healthbar.getComponent<TransformComponent>().width = playerHealth;
+
+	playerWeapon = 0;
+	rocketAmmunition = 5;
 
 	scoreValue = 0;
 	waveValue = 1;
@@ -240,8 +250,7 @@ void Game::update() {
 					player.getComponent<TransformComponent>().position = playerPos;
 				}
 				else if (c->getComponent<ColliderComponent>().tag == "lava") {
-					health -= 1;
-					updateHealthbar(1);
+					updateHealth(1);
 					if (health >= 1) {
 						player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
 						std::cout << "I AM BURNING!" << std::endl;
@@ -258,11 +267,26 @@ void Game::update() {
 				}
 			}
 		}
+		for (auto& i : items) {
+			if (Collision::AABB(player.getComponent<ColliderComponent>().collider, i->getComponent<ColliderComponent>().collider))
+			{	
+				std::cout << "drop sammeln!" << std::endl;
+				if (i->getComponent<ColliderComponent>().tag == "itemHealth") {
+					updateHealth(-(i->getComponent<ItemComponent>().health));
+				}
+				else if (i->getComponent<ColliderComponent>().tag == "itemRockets") {
+					rocketAmmunition += i->getComponent<ItemComponent>().rockets;
+				}
+				i->destroy();
+			}
+		}
+
+
+
 		for (auto& e : enemies) {
 			if (Collision::AABB(e->getComponent<ColliderComponent>().collider, playerCol))
 			{
-				health -= 1;
-				updateHealthbar(1);
+				updateHealth(1);
 				if (health >= 1) {
 					player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
 					std::cout << "I AM BURNING!" << std::endl;
@@ -283,15 +307,17 @@ void Game::update() {
 			for (auto& e : enemies) {
 				if (Collision::AABB(e->getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
 				{
-					if (Game::playerWeapon == Game::rifle) {
+					TransformComponent transform = e->getComponent<TransformComponent>();
+					if (p->getComponent<WeaponComponent>().weapon == Game::rifle) {
 						e->getComponent<HealthManagementComponent>().maximumHealth -= 1;
 						if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
+							Game::dropItem(4,transform.position.x, transform.position.y);
 							e->destroy();
 							waveZombieCounter--;
 							scoreValue++;
 						}
 					}
-					else if (Game::playerWeapon == Game::rocketLauncher) {
+					else if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {
 						int xpos = p->getComponent<TransformComponent>().position.x;
 						int ypos = p->getComponent<TransformComponent>().position.y;
 						auto& explosion(manager.addEntity());
@@ -307,11 +333,36 @@ void Game::update() {
 
 				}
 			}
+			/*for (auto& c : colliders)
+			{
+				SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+				if (c->getComponent<ColliderComponent>().tag == "wall")
+				{
+					if(Collision::AABB(cCol, p->getComponent<ColliderComponent>().collider))
+					{
+						if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {	//
+							std::cout << c->getComponent<ColliderComponent>().tag << std::endl;
+							int xpos = p->getComponent<TransformComponent>().position.x;
+							int ypos = p->getComponent<TransformComponent>().position.y;
+							auto& explosion(manager.addEntity());
+							explosion.addComponent<TransformComponent>(xpos - 80, ypos - 80, 32, 32, 6);
+							explosion.addComponent<SpriteComponent>("explosion");
+							explosion.addComponent<ColliderComponent>("explosion", xpos, ypos, 96, true);
+							explosion.addGroup(groupExplosions);
+							explosionTimer = 10;
+							std::cout << "Explosion!" << std::endl;
+							p->destroy();
+						}
+					}
+				}
+			}*/
 
 		}
 		for (auto& ex : explosions) {
 			for (auto& e : enemies) {
 				if (Collision::CircleRect(ex->getComponent<ColliderComponent>().colliderCircle, e->getComponent<ColliderComponent>().collider)) {
+					TransformComponent transform = e->getComponent<TransformComponent>();
+					Game::dropItem(4, transform.position.x, transform.position.y);
 					e->destroy();
 					waveZombieCounter--;
 					scoreValue++;
@@ -319,11 +370,13 @@ void Game::update() {
 				}
 			}
 		}
-		std::stringstream sv, wv;
+		std::stringstream sv, wv, rl;
 		sv << "SCORE: " << scoreValue;
-		score.getComponent<UILabel>().setLabelText(sv.str(), "arial");
+		score.getComponent<UILabel>().setLabelText(sv.str(), "showg48");
 		wv << "WAVE: " << waveValue;
-		wave.getComponent<UILabel>().setLabelText(wv.str(), "arial");
+		wave.getComponent<UILabel>().setLabelText(wv.str(), "showg48");
+		rl << "ROCKETS: " << rocketAmmunition;
+		rocketLauncherAmmunitionDisplay.getComponent<UILabel>().setLabelText(rl.str(), "showg48");
 		camera.x = player.getComponent<TransformComponent>().position.x - 640;
 		camera.y = player.getComponent<TransformComponent>().position.y - 400;
 
@@ -350,9 +403,17 @@ void Game::update() {
 		gameOver.getComponent<TransformComponent>().position.y = camera.y + 220;
 	}
 }
-void Game::updateHealthbar(int damage) {
-	healthbar.getComponent<SpriteComponent>().srcRect.w -= damage;
-	healthbar.getComponent<TransformComponent>().width -= damage;
+void Game::updateHealth(int damage) {
+	if ((health - damage) > 100) {
+		health = 100;
+		healthbar.getComponent<SpriteComponent>().srcRect.w = health;
+		healthbar.getComponent<TransformComponent>().width = health;
+	}
+	else {
+		health -= damage;
+		healthbar.getComponent<SpriteComponent>().srcRect.w -= damage;
+		healthbar.getComponent<TransformComponent>().width -= damage;
+	}
 }
 
 void Game::render()
@@ -361,6 +422,10 @@ void Game::render()
 		for (auto& t : tiles)
 		{
 			t->draw();
+		}
+		for (auto& i : items)
+		{
+			i->draw();
 		}
 		for (auto& p : players)
 		{
@@ -421,6 +486,29 @@ void Game::spawnZombieAtRandomPosition() {
 	int index = Game::createRandomNumber(0, 2);
 	Vector2D* spawnPos = spawnPoints[index];
 	Game::spawnZombie(spawnPos->x, spawnPos->y);
+}
+
+void Game::dropItem(int probability, int xpos, int ypos) {
+	int i = Game::createRandomNumber(0, probability);
+	if (i == probability) {
+		auto& item(manager.addEntity());
+		item.addComponent<TransformComponent>(1, xpos, ypos);
+		int a = Game::createRandomNumber(0, 1);
+		if (a == 0) {
+			//drop rockets
+			item.addComponent<SpriteComponent>("itemRockets");
+			item.addComponent<ColliderComponent>("itemRockets", xpos, ypos, 32);
+			item.addComponent<ItemComponent>(0, 3);
+
+		}
+		else if (a == 1) {
+			//drop health
+			item.addComponent<SpriteComponent>("itemHealth");
+			item.addComponent<ColliderComponent>("itemHealth", xpos, ypos, 32);
+			item.addComponent<ItemComponent>(20, 0);
+		}
+		item.addGroup(groupItems);
+	}
 }
 
 
