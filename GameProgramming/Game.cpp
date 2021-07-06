@@ -185,8 +185,11 @@ void Game::newGame() {
 	for (auto& p : projectiles) {
 		p->destroy();
 	}
-	player.getComponent<TransformComponent>().position.x = 250;
-	player.getComponent<TransformComponent>().position.y = 320;
+	TransformComponent transform = player.getComponent<TransformComponent>();
+	transform.position.x = 250;
+	transform.position.y = 320;
+	transform.velocity.x = 0;
+	transform.velocity.y = 0;
 
 	int playerHealth = 100;
 	player.getComponent<HealthManagementComponent>().maximumHealth = playerHealth;
