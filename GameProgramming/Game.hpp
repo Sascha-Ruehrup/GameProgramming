@@ -30,6 +30,8 @@ public:
 	void spawnZombie(int xpos, int ypos);
 	bool running() { return isRunning; };
 	static int createRandomNumber(int lowestValue, int highestValue);
+	void playerGameOver();
+	void killZombie(Entity*& eEntity);
 	void spawnZombieAtRandomPosition();
 	void dropItem(int probability, int xpos, int ypos);
 	static void placeUI(Entity& eEntity, int xpos, int ypos);

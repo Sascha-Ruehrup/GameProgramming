@@ -9,6 +9,8 @@
 #include <map>
 #include <sstream>
 #include <random>
+
+
 Map* map;
 Manager manager;
 SDL_Renderer* Game::renderer = nullptr;
@@ -23,9 +25,9 @@ bool Game::isRunning = false;
 bool gameStarted = false;
 bool firstUpdate = true;
 bool drawGameOver = false;
-Vector2D* Game::playerPosition = new Vector2D(0.0f,0.0f);
-int Game::playerWeapon = 0;
-int Game::rocketAmmunition;
+Vector2D* Game::playerPosition = new Vector2D(250.0f,320.0f);
+int Game::playerWeapon = Game::rifle;
+int Game::rocketAmmunition = 0;
 int Game::volume = 32;
 
 auto& player(manager.addEntity());
@@ -255,17 +257,12 @@ void Game::update() {
 			{
 				timer = 60;
 			}
-
 		}
 		SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
 		Vector2D playerPos = player.getComponent<TransformComponent>().position;
 
 		Game::playerPosition = &playerPos;
 
-		std::map<std::size_t, Vector2D>enemiesPositions;
-		for (auto& e : enemies) {
-			enemiesPositions.insert(std::make_pair(e->ID, e->getComponent<TransformComponent>().position));
-		}
 		manager.refresh();
 		manager.update();
 
@@ -283,19 +280,17 @@ void Game::update() {
 				}
 				else if (c->getComponent<ColliderComponent>().tag == "lava") {
 					updateHealth(1);
-					if (health >= 1) {
+					if (player.getComponent<HealthManagementComponent>().maximumHealth >= 1) {
 						player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
 					}
 					else if (health <= 0)
 					{
-						drawGameOver = true;
-						gameStarted = false;
-						mAudioMgr->pauseMusic();
-						Mix_Pause(0);
+						playerGameOver();
 					}
 				}
 			}
 		}
+
 		for (auto& i : items) {
 			if (Collision::AABB(player.getComponent<ColliderComponent>().collider, i->getComponent<ColliderComponent>().collider))
 			{
@@ -309,7 +304,6 @@ void Game::update() {
 			}
 		}
 
-
 		for (auto& e : enemies) {
 			if (Collision::AABB(e->getComponent<ColliderComponent>().collider, playerCol))
 			{
@@ -319,10 +313,7 @@ void Game::update() {
 				}
 				else if (health <= 0)
 				{
-					drawGameOver = true;
-					mAudioMgr->pauseMusic();
-					Mix_Pause(0);
-					gameStarted = false;
+					playerGameOver();
 				}
 			}
 		}
@@ -343,10 +334,7 @@ void Game::update() {
 						blood.addGroup(groupBlood);
 
 						if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
-							Game::dropItem(4,transform.position.x, transform.position.y);
-							e->destroy();
-							waveZombieCounter--;
-							scoreValue++;
+							killZombie(e);
 						}
 					}
 					else if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {
@@ -370,16 +358,12 @@ void Game::update() {
 		for (auto& ex : explosions) {
 			for (auto& e : enemies) {
 				if (Collision::CircleRect(ex->getComponent<ColliderComponent>().colliderCircle, e->getComponent<ColliderComponent>().collider)) {
-					TransformComponent transform = e->getComponent<TransformComponent>();
-					Game::dropItem(4, transform.position.x, transform.position.y);
-					e->destroy();
-					waveZombieCounter--;
-					scoreValue++;
+					killZombie(e);
 				}
 			}
 		}
 
-
+		// update displayed scores, numbers and counters
 		std::stringstream sv, wv, rl;
 		sv << "SCORE: " << scoreValue;
 		score.getComponent<UILabel>().setLabelText(sv.str(), "showg48");
@@ -387,7 +371,6 @@ void Game::update() {
 		wave.getComponent<UILabel>().setLabelText(wv.str(), "showg48");
 		rl << "ROCKETS: " << rocketAmmunition;
 		rocketLauncherAmmunitionDisplay.getComponent<UILabel>().setLabelText(rl.str(), "showg48");
-
 
 
 		// adjust camera position relative to player's position
@@ -413,10 +396,22 @@ void Game::update() {
 	}
 }
 
+
 void Game::placeUI(Entity& eEntity, int xpos, int ypos) {
 	Vector2D* position = &eEntity.getComponent<TransformComponent>().position;
 	position->x = Game::camera.x + xpos;
 	position->y = Game::camera.y + ypos;
+}
+
+
+void Game::playerGameOver() {
+
+	mAudioMgr->pauseMusic();
+	// pause sfx- channel 0, footsteps
+	Mix_Pause(0);
+
+	drawGameOver = true;
+	gameStarted = false;
 }
 
 
@@ -481,6 +476,15 @@ void Game::render()
 		}
 	
 	SDL_RenderPresent(renderer);
+}
+
+
+void Game::killZombie(Entity*& eEntity) {
+	TransformComponent transform = eEntity->getComponent<TransformComponent>();
+	Game::dropItem(4, transform.position.x, transform.position.y);
+	eEntity->destroy();
+	waveZombieCounter--;
+	scoreValue++;
 }
 
 
