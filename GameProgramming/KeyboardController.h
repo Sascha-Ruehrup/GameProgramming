@@ -71,9 +71,81 @@ public:
 					break;
 				case SDLK_e:
 					Game::playerWeapon = Game::rifle;
+					if (playerIsWalking()) {
+						switch (lastKeyClicked) {
+						case 'w':
+							sprite->play("RifleWalkUp");
+							break;
+						case 'a':
+							sprite->play("RifleWalkSideways");
+							break;
+						case 'd':
+							sprite->play("RifleWalkSideways");
+							break;
+						case 's':
+							sprite->play("RifleWalkDown");
+							break;
+						default:
+							break;
+						}
+					}
+					else {
+						switch (lastKeyClicked) {
+						case 'w':
+							sprite->play("RifleIdleUp");
+							break;
+						case 'a':
+							sprite->play("RifleIdleSideways");
+							break;
+						case 'd':
+							sprite->play("RifleIdleSideways");
+							break;
+						case 's':
+							sprite->play("RifleIdleDown");
+							break;
+						default:
+							break;
+						}
+					}
 					break;
 				case SDLK_q:
 					Game::playerWeapon = Game::rifle;
+					if (playerIsWalking()) {
+						switch (lastKeyClicked) {
+						case 'w':
+							sprite->play("RifleWalkUp");
+							break;
+						case 'a':
+							sprite->play("RifleWalkSideways");
+							break;
+						case 'd':
+							sprite->play("RifleWalkSideways");
+							break;
+						case 's':
+							sprite->play("RifleWalkDown");
+							break;
+						default:
+							break;
+						}
+					}
+					else {
+						switch (lastKeyClicked) {
+						case 'w':
+							sprite->play("RifleIdleUp");
+							break;
+						case 'a':
+							sprite->play("RifleIdleSideways");
+							break;
+						case 'd':
+							sprite->play("RifleIdleSideways");
+							break;
+						case 's':
+							sprite->play("RifleIdleDown");
+							break;
+						default:
+							break;
+						}
+					}
 					break;
 				case SDLK_SPACE:
 					if ((rocketLauncherReady) && (Game::rocketAmmunition>0)&&(rocketLauncherCooldown<=0)) {
@@ -117,30 +189,45 @@ public:
 				case SDLK_w:
 					if (transform->velocity.y < 0) {
 						transform->velocity.y = 0;
-						sprite->play("RocketLauncherIdle");
+						sprite->play("RocketLauncherIdleUp");
 					}
 					break;
 				case SDLK_a:
 					if (transform->velocity.x < 0) {
 						transform->velocity.x = 0;
-						sprite->play("RocketLauncherIdle");
+						sprite->play("RocketLauncherIdleSideways");
 					}
 					break;
 				case SDLK_d:
 					if (transform->velocity.x > 0) {
 						transform->velocity.x = 0;
-						sprite->play("RocketLauncherIdle");
+						sprite->play("RocketLauncherIdleSideways");
 					}
 					break;
 				case SDLK_s:
 					if (transform->velocity.y > 0) {
 						transform->velocity.y = 0;
-						sprite->play("RocketLauncherIdle");
+						sprite->play("RocketLauncherIdleDown");
 					}
 					break;
 				case SDLK_SPACE:
-					sprite->play("RocketLauncherIdle");
 					rocketLauncherReady = true;
+					switch (lastKeyClicked) {
+					case 'w':
+						sprite->play("RocketLauncherIdleUp");
+						break;
+					case 'a':
+						sprite->play("RocketLauncherIdleSideways");
+						break;
+					case 'd':
+						sprite->play("RocketLauncherIdleSideways");
+						break;
+					case 's':
+						sprite->play("RocketLauncherIdleDown");
+						break;
+					default:
+						break;
+					}
 					break;
 				default:
 					break;
@@ -153,32 +240,96 @@ public:
 				switch (Game::event.key.keysym.sym)
 				{
 				case SDLK_w:
-					transform->velocity.y = -1;
-					sprite->play("RifleWalkUp");
-					lastKeyClicked = 'w';
+					movePlayerY("RifleWalkUp", 'w', -1);
 					break;
 				case SDLK_a:
-					transform->velocity.x = -1;
-					sprite->play("RifleWalkSideways");
+					movePlayerX("RifleWalkSideways", 'a', -1);
 					sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
-					lastKeyClicked = 'a';
 					break;
 				case SDLK_d:
-					transform->velocity.x = 1;
-					sprite->play("RifleWalkSideways");
+					movePlayerX("RifleWalkSideways", 'd', 1);
 					sprite->spriteFlip = SDL_FLIP_NONE;
-					lastKeyClicked = 'd';
 					break;
 				case SDLK_s:
-					transform->velocity.y = 1;
-					sprite->play("RifleWalkDown");
-					lastKeyClicked = 's';
+					movePlayerY("RifleWalkDown", 's', 1);
 					break;
 				case SDLK_e:
 					Game::playerWeapon = Game::rocketLauncher;
+					if (playerIsWalking()) {
+						switch (lastKeyClicked) {
+						case 'w':
+							sprite->play("RocketLauncherWalkUp");
+							break;
+						case 'a':
+							sprite->play("RocketLauncherWalkSideways");
+							break;
+						case 'd':
+							sprite->play("RocketLauncherWalkSideways");
+							break;
+						case 's':
+							sprite->play("RocketLauncherWalkDown");
+							break;
+						default:
+							break;
+						}
+					}
+					else {
+						switch (lastKeyClicked) {
+						case 'w':
+							sprite->play("RocketLauncherIdleUp");
+							break;
+						case 'a':
+							sprite->play("RocketLauncherIdleSideways");
+							break;
+						case 'd':
+							sprite->play("RocketLauncherIdleSideways");
+							break;
+						case 's':
+							sprite->play("RocketLauncherIdleDown");
+							break;
+						default:
+							break;
+						}
+					}
 					break;
 				case SDLK_q:
 					Game::playerWeapon = Game::rocketLauncher;
+					if (playerIsWalking()) {
+						switch (lastKeyClicked) {
+						case 'w':
+							sprite->play("RocketLauncherWalkUp");
+							break;
+						case 'a':
+							sprite->play("RocketLauncherWalkSideways");
+							break;
+						case 'd':
+							sprite->play("RocketLauncherWalkSideways");
+							break;
+						case 's':
+							sprite->play("RocketLauncherWalkDown");
+							break;
+						default:
+							break;
+						}
+					}
+					else {
+						switch (lastKeyClicked) {
+						case 'w':
+							sprite->play("RocketLauncherIdleUp");
+							break;
+						case 'a':
+							sprite->play("RocketLauncherIdleSideways");
+							break;
+						case 'd':
+							sprite->play("RocketLauncherIdleSideways");
+							break;
+						case 's':
+							sprite->play("RocketLauncherIdleDown");
+							break;
+						default:
+							break;
+						}
+					}
 					break;
 				case SDLK_SPACE:
 					if(rifleCooldown<=0){
@@ -219,29 +370,44 @@ public:
 				case SDLK_w:
 					if (transform->velocity.y < 0) {
 						transform->velocity.y = 0;
-						sprite->play("RifleIdle");
+						sprite->play("RifleIdleUp");
 					}
 					break;
 				case SDLK_a:
 					if (transform->velocity.x < 0) {
 						transform->velocity.x = 0;
-						sprite->play("RifleIdle");
+						sprite->play("RifleIdleSideways");
 					}
 					break;
 				case SDLK_d:
 					if (transform->velocity.x > 0) {
 						transform->velocity.x = 0;
-						sprite->play("RifleIdle");
+						sprite->play("RifleIdleSideways");
 					}
 					break;
 				case SDLK_s:
 					if (transform->velocity.y > 0) {
 						transform->velocity.y = 0;
-						sprite->play("RifleIdle");
+						sprite->play("RifleIdleDown");
 					}
 					break;
 				case SDLK_SPACE:
-					sprite->play("RifleIdle");
+					switch (lastKeyClicked) {
+					case 'w':
+						sprite->play("RifleIdleUp");
+						break;
+					case 'a':
+						sprite->play("RifleIdleSideways");
+						break;
+					case 'd':
+						sprite->play("RifleIdleSideways");
+						break;
+					case 's':
+						sprite->play("RifleIdleDown");
+						break;
+					default:
+						break;
+					}
 					break;
 				default:
 					break;

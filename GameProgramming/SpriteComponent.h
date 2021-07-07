@@ -49,7 +49,7 @@ public:
 			Animation rifleShootUp = Animation(6, 4, 50);
 			Animation rifleShootDown = Animation(5, 3, 50);
 
-			Animation rocketLauncherIdle = Animation(8, 4, 50);
+			Animation rocketLauncherIdleSideways = Animation(8, 4, 50);
 			Animation rocketLauncherIdleUp = Animation(14, 4, 100);
 			Animation rocketLauncherIdleDown = Animation(15, 3, 100);
 
@@ -73,7 +73,7 @@ public:
 			animations.emplace("RifleShootUp", rifleShootUp);
 			animations.emplace("RifleShootDown", rifleShootDown);
 
-			animations.emplace("RocketLauncherIdle", rocketLauncherIdle);
+			animations.emplace("RocketLauncherIdleSideways", rocketLauncherIdleSideways);
 			animations.emplace("RocketLauncherIdleUp", rocketLauncherIdleUp);
 			animations.emplace("RocketLauncherIdleDown", rocketLauncherIdleDown);
 
