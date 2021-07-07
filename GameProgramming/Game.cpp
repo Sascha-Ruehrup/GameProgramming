@@ -42,7 +42,7 @@ int health = 100;
 int scoreValue = 0;
 int waveValue = 1;
 int waveZombieCounter = 30;
-Vector2D* spawnPoints[] = { new Vector2D(0.0f,700.0f), new Vector2D(1200.0f, 0.0f),new Vector2D(2500.0f,700.0f) };
+std::vector<Vector2D*> spawnPoints = { new Vector2D(-150.0f,560.0f), new Vector2D(1080.0f, -150.0f),new Vector2D(2560.0f,560.0f), new Vector2D(1080.0f, 1610.0f) };
 
 int timer = 60;
 int explosionTimer = 10;
@@ -225,6 +225,8 @@ void Game::newGame() {
 
 
 void Game::update() {
+
+	//printf("x,y: %d, %d\n", static_cast<int>(player.getComponent<TransformComponent>().position.x), static_cast<int>(player.getComponent<TransformComponent>().position.y));
 	if (Game::playerWeapon == 0) {
 		weapon.getComponent<SpriteComponent>().setTex("rifle");
 	}
@@ -271,6 +273,12 @@ void Game::update() {
 		manager.refresh();
 		manager.update();
 
+		// keep player inside the map
+		Vector2D playerPosUpdated = player.getComponent<TransformComponent>().position;
+		if ((playerPosUpdated.x <= 0) || (playerPosUpdated.x >= 2440) || (playerPosUpdated.y <= 0) || (playerPosUpdated.y>=1470) ) {
+			player.getComponent<TransformComponent>().position = playerPos;
+		}
+
 		for (auto& c : colliders) {
 			SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 			if (Collision::AABB(cCol, playerCol)) {
@@ -293,7 +301,6 @@ void Game::update() {
 						//TODO
 						//endGame();
 					}
-
 				}
 			}
 		}
@@ -527,7 +534,7 @@ int Game::createRandomNumber(int lowestValue, int highestValue) {
 	return randomNumber;
 }
 void Game::spawnZombieAtRandomPosition() {
-	int index = Game::createRandomNumber(0, 2);
+	int index = Game::createRandomNumber(0, spawnPoints.size()-1);
 	Vector2D* spawnPos = spawnPoints[index];
 	Game::spawnZombie(spawnPos->x, spawnPos->y);
 }
