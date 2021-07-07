@@ -11,24 +11,24 @@
 #include <random>
 
 
-Map* map;
 Manager manager;
-SDL_Renderer* Game::renderer = nullptr;
-SDL_Event Game::event;
 
-SDL_Rect Game::camera = { 0,0,1280, 800 };
-
+Map* map;
 AssetManager* Game::assets = new AssetManager(&manager);
 AudioManager* Game::mAudioMgr = new AudioManager();
+SDL_Renderer* Game::renderer = nullptr;
+
+SDL_Event Game::event;
+SDL_Rect Game::camera = { 0,0,1280, 800 };
 
 bool Game::isRunning = false;
 bool gameStarted = false;
 bool firstUpdate = true;
 bool drawGameOver = false;
+
 Vector2D* Game::playerPosition = new Vector2D(250.0f,320.0f);
-int Game::playerWeapon = Game::rifle;
-int Game::rocketAmmunition = 0;
-int Game::volume = 32;
+std::vector<Vector2D*> spawnPoints = { new Vector2D(-150.0f,560.0f), new Vector2D(1080.0f, -150.0f),
+										new Vector2D(2560.0f,560.0f), new Vector2D(1080.0f, 1610.0f) };
 
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
@@ -40,19 +40,29 @@ auto& startbutton(manager.addEntity());
 auto& gameOver(manager.addEntity());
 auto& rocketLauncherAmmunitionDisplay(manager.addEntity());
 
+auto& tiles(manager.getGroup(Game::groupMap));
+auto& players(manager.getGroup(Game::groupPlayers));
+auto& colliders(manager.getGroup(Game::groupColliders));
+auto& UI(manager.getGroup(Game::groupUI));
+auto& projectiles(manager.getGroup(Game::groupProjectiles));
+auto& enemies(manager.getGroup(Game::groupEnemies));
+auto& explosions(manager.getGroup(Game::groupExplosions));
+auto& items(manager.getGroup(Game::groupItems));
+auto& bloods(manager.getGroup(Game::groupBlood));
+
+int Game::playerWeapon = Game::rifle;
+int Game::rocketAmmunition = 0;
+int Game::volume = 32;
 int health = 100;
 int scoreValue = 0;
 int waveValue = 1;
 int waveZombieCounter = 30;
-std::vector<Vector2D*> spawnPoints = { new Vector2D(-150.0f,560.0f), new Vector2D(1080.0f, -150.0f),new Vector2D(2560.0f,560.0f), new Vector2D(1080.0f, 1610.0f) };
-
 int timer = 60;
 int explosionTimer = 10;
 int xMousepos = 0;
 int yMousepos = 0;
 
-Game::Game()
-{}
+Game::Game() {}
 
 Game::~Game()
 {
@@ -86,7 +96,6 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	else {
 		isRunning = false;
 	}
-
 	if (TTF_Init() == -1)
 	{
 		std::cout << "Error: SDL_TTF" << std::endl;
@@ -110,13 +119,12 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->addTexture("blood", "assets/blood.png");
 
 	assets->addFont("showg48", "assets/SHOWG.ttf", 48);
+
 	map = new Map("terrain", 2, 32);
-	
 	map->loadMap("assets/40x25.map",40,25);
 
 	player.addComponent<TransformComponent>(4, 250, 320);
-	player.addComponent<SpriteComponent>("player",true); // player sprite sheet	Rambo_SpriteSheet.png
-	//player.addComponent<WeaponComponent>(Game::rocketLauncher);
+	player.addComponent<SpriteComponent>("player",true);
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addComponent<HealthManagementComponent>(100);
@@ -125,9 +133,12 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	healthbar.addComponent<TransformComponent>(0, 0, 10, 100, 4);
 	healthbar.addComponent<SpriteComponent>("healthbar");
 	healthbar.addGroup(groupUI);
+
 	weapon.addComponent<TransformComponent>(0, 600, 32, 32, 8);
 	weapon.addComponent<SpriteComponent>("rifle");
 	weapon.addGroup(groupUI);
+
+	// create UI elements
 	SDL_Color black = { 0,0,0,255 };
 	score.addComponent<UILabel>("score", 500, 60, "Score: ", "showg48", black);
 	score.addGroup(groupUI);
@@ -135,26 +146,20 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	wave.addGroup(groupUI);
 	rocketLauncherAmmunitionDisplay.addComponent<UILabel>("rlAmmo",0, 520, "ROCKETS: ", "showg48", black);
 	rocketLauncherAmmunitionDisplay.addGroup(groupUI);
+
 	startbutton.addComponent<TransformComponent>(376, 384, 32, 128, 4);
 	startbutton.addComponent<SpriteComponent>("startButton");
 	gameOver.addComponent<TransformComponent>(376, 220, 64, 256, 2);
 	gameOver.addComponent<SpriteComponent>("gameOver");
+
+	// initial Audio
 	mAudioMgr->playMusic("Playboi Carti - Magnolia.wav");
 	mAudioMgr->pauseMusic();
 	Mix_VolumeMusic(2);
+	// set volume of all SFX channels
 	Mix_Volume(-1, volume);
 }
 
-
-auto& tiles(manager.getGroup(Game::groupMap));
-auto& players(manager.getGroup(Game::groupPlayers));
-auto& colliders(manager.getGroup(Game::groupColliders));
-auto& UI(manager.getGroup(Game::groupUI));
-auto& projectiles(manager.getGroup(Game::groupProjectiles));
-auto& enemies(manager.getGroup(Game::groupEnemies));
-auto& explosions(manager.getGroup(Game::groupExplosions));
-auto& items(manager.getGroup(Game::groupItems));
-auto& bloods(manager.getGroup(Game::groupBlood));
 
 void Game::handleEvents()
 {
@@ -204,7 +209,6 @@ void Game::newGame() {
 
 	int playerHealth = 100;
 	player.getComponent<HealthManagementComponent>().maximumHealth = playerHealth;
-	health = playerHealth;
 	healthbar.getComponent<SpriteComponent>().srcRect.w = playerHealth;
 	healthbar.getComponent<TransformComponent>().width = playerHealth;
 
