@@ -194,11 +194,11 @@ void Game::newGame() {
 	for (auto& b : bloods) {
 		b->destroy();
 	}
-	TransformComponent transform = player.getComponent<TransformComponent>();
-	transform.position.x = 250;
-	transform.position.y = 320;
-	transform.velocity.x = 0;
-	transform.velocity.y = 0;
+	TransformComponent* transform = &player.getComponent<TransformComponent>();
+	transform->position.x = 250;
+	transform->position.y = 320;
+	transform->velocity.x = 0;
+	transform->velocity.y = 0;
 
 	int playerHealth = 100;
 	player.getComponent<HealthManagementComponent>().maximumHealth = playerHealth;
@@ -215,7 +215,6 @@ void Game::newGame() {
 
 	timer = 180;
 
-
 	Mix_Resume(0);
 	mAudioMgr->resumeMusic();
 
@@ -226,7 +225,6 @@ void Game::newGame() {
 
 void Game::update() {
 
-	//printf("x,y: %d, %d\n", static_cast<int>(player.getComponent<TransformComponent>().position.x), static_cast<int>(player.getComponent<TransformComponent>().position.y));
 	if (Game::playerWeapon == 0) {
 		weapon.getComponent<SpriteComponent>().setTex("rifle");
 	}
@@ -239,7 +237,6 @@ void Game::update() {
 			manager.update();
 			firstUpdate = false;
 		}
-		
 	}
 	else
 	{
@@ -264,7 +261,6 @@ void Game::update() {
 		Vector2D playerPos = player.getComponent<TransformComponent>().position;
 
 		Game::playerPosition = &playerPos;
-		//Game::playerWeapon = player.getComponent<WeaponComponent>().weapon;
 
 		std::map<std::size_t, Vector2D>enemiesPositions;
 		for (auto& e : enemies) {
@@ -289,25 +285,20 @@ void Game::update() {
 					updateHealth(1);
 					if (health >= 1) {
 						player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
-						std::cout << "I AM BURNING!" << std::endl;
 					}
 					else if (health <= 0)
 					{
 						drawGameOver = true;
-						std::cout << " Tot" << std::endl;
 						gameStarted = false;
 						mAudioMgr->pauseMusic();
 						Mix_Pause(0);
-						//TODO
-						//endGame();
 					}
 				}
 			}
 		}
 		for (auto& i : items) {
 			if (Collision::AABB(player.getComponent<ColliderComponent>().collider, i->getComponent<ColliderComponent>().collider))
-			{	
-				std::cout << "drop sammeln!" << std::endl;
+			{
 				if (i->getComponent<ColliderComponent>().tag == "itemHealth") {
 					updateHealth(-(i->getComponent<ItemComponent>().health));
 				}
@@ -317,7 +308,6 @@ void Game::update() {
 				i->destroy();
 			}
 		}
-
 
 
 		for (auto& e : enemies) {
@@ -332,10 +322,7 @@ void Game::update() {
 					drawGameOver = true;
 					mAudioMgr->pauseMusic();
 					Mix_Pause(0);
-					std::cout << " Tot" << std::endl;
 					gameStarted = false;
-					//TODO
-					//endGame();
 				}
 			}
 		}
@@ -348,61 +335,37 @@ void Game::update() {
 					TransformComponent transform = e->getComponent<TransformComponent>();
 					if (p->getComponent<WeaponComponent>().weapon == Game::rifle) {
 						e->getComponent<HealthManagementComponent>().maximumHealth -= 1;
+
 						auto& blood(manager.addEntity());
 						blood.addComponent<TransformComponent>(transform.position.x, transform.position.y, 32, 32, 4);
 						blood.addComponent<SpriteComponent>("blood");
 						blood.getComponent<SpriteComponent>().setAngle(Game::createRandomNumber(0, 360));
 						blood.addGroup(groupBlood);
+
 						if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
 							Game::dropItem(4,transform.position.x, transform.position.y);
 							e->destroy();
 							waveZombieCounter--;
 							scoreValue++;
-
-							//mAudioMgr->playSFX("Wilhelm_Scream.wav",0, -1);
 						}
 					}
 					else if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {
 						int xpos = p->getComponent<TransformComponent>().position.x;
 						int ypos = p->getComponent<TransformComponent>().position.y;
+
 						auto& explosion(manager.addEntity());
 						explosion.addComponent<TransformComponent>(xpos - 80, ypos - 80, 32, 32, 6);
 						explosion.addComponent<SpriteComponent>("explosion");
 						explosion.addComponent<ColliderComponent>("explosion", xpos, ypos, 96, true);
 						explosion.addGroup(groupExplosions);
+
 						Game::mAudioMgr->playSFX("explosion.wav", 0, -1);
 						explosionTimer = 10;
-						std::cout << "Explosion!" << std::endl;
 					}
-					
 					p->destroy();
 
 				}
 			}
-			/*for (auto& c : colliders)
-			{
-				SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-				if (c->getComponent<ColliderComponent>().tag == "wall")
-				{
-					if(Collision::AABB(cCol, p->getComponent<ColliderComponent>().collider))
-					{
-						if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {	//
-							std::cout << c->getComponent<ColliderComponent>().tag << std::endl;
-							int xpos = p->getComponent<TransformComponent>().position.x;
-							int ypos = p->getComponent<TransformComponent>().position.y;
-							auto& explosion(manager.addEntity());
-							explosion.addComponent<TransformComponent>(xpos - 80, ypos - 80, 32, 32, 6);
-							explosion.addComponent<SpriteComponent>("explosion");
-							explosion.addComponent<ColliderComponent>("explosion", xpos, ypos, 96, true);
-							explosion.addGroup(groupExplosions);
-							explosionTimer = 10;
-							std::cout << "Explosion!" << std::endl;
-							p->destroy();
-						}
-					}
-				}
-			}*/
-
 		}
 		for (auto& ex : explosions) {
 			for (auto& e : enemies) {
@@ -412,11 +375,11 @@ void Game::update() {
 					e->destroy();
 					waveZombieCounter--;
 					scoreValue++;
-
-					//mAudioMgr->playSFX("Wilhelm_Scream.wav", 0, -1);
 				}
 			}
 		}
+
+
 		std::stringstream sv, wv, rl;
 		sv << "SCORE: " << scoreValue;
 		score.getComponent<UILabel>().setLabelText(sv.str(), "showg48");
@@ -424,9 +387,12 @@ void Game::update() {
 		wave.getComponent<UILabel>().setLabelText(wv.str(), "showg48");
 		rl << "ROCKETS: " << rocketAmmunition;
 		rocketLauncherAmmunitionDisplay.getComponent<UILabel>().setLabelText(rl.str(), "showg48");
+
+
+
+		// adjust camera position relative to player's position
 		camera.x = player.getComponent<TransformComponent>().position.x - 640;
 		camera.y = player.getComponent<TransformComponent>().position.y - 400;
-
 		if (camera.x < 0) {
 			camera.x = 0;
 		}
@@ -438,18 +404,22 @@ void Game::update() {
 		}
 		if (camera.y > camera.h) {
 			camera.y = camera.h;
-
 		}
-		healthbar.getComponent<TransformComponent>().position.x = camera.x;
-		healthbar.getComponent<TransformComponent>().position.y = camera.y;
-		weapon.getComponent<TransformComponent>().position.x = camera.x;
-		weapon.getComponent<TransformComponent>().position.y = camera.y + 600;
-		startbutton.getComponent<TransformComponent>().position.x = camera.x + 376;
-		startbutton.getComponent<TransformComponent>().position.y = camera.y + 384;
-		gameOver.getComponent<TransformComponent>().position.x = camera.x + 376;
-		gameOver.getComponent<TransformComponent>().position.y = camera.y + 220;
+
+		placeUI(healthbar, 0, 0);
+		placeUI(weapon, 0, 600);
+		placeUI(startbutton, 376, 384);
+		placeUI(gameOver, 376, 220);
 	}
 }
+
+void Game::placeUI(Entity& eEntity, int xpos, int ypos) {
+	Vector2D* position = &eEntity.getComponent<TransformComponent>().position;
+	position->x = Game::camera.x + xpos;
+	position->y = Game::camera.y + ypos;
+}
+
+
 void Game::updateHealth(int damage) {
 	if ((health - damage) > 100) {
 		health = 100;

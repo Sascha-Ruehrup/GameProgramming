@@ -9,6 +9,7 @@
 #include "Map.h"
 #include "AudioManager.h"
 #include <SDL_ttf.h>
+#include "ECS.h"
 
 
 class AssetManager;
@@ -31,6 +32,7 @@ public:
 	static int createRandomNumber(int lowestValue, int highestValue);
 	void spawnZombieAtRandomPosition();
 	void dropItem(int probability, int xpos, int ypos);
+	static void placeUI(Entity& eEntity, int xpos, int ypos);
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
