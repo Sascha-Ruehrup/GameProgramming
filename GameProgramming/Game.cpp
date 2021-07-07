@@ -433,6 +433,7 @@ void Game::updateHealth(int damage) {
 	}
 }
 
+
 void Game::render()
 {
 	SDL_RenderClear(renderer);
@@ -479,10 +480,10 @@ void Game::render()
 			gameOver.draw();
 		}
 	
-	
-	
 	SDL_RenderPresent(renderer);
 }
+
+
 void Game::spawnZombie(int xpos, int ypos)
 {
 	auto& zombie(manager.addEntity());
@@ -493,42 +494,53 @@ void Game::spawnZombie(int xpos, int ypos)
 	zombie.addComponent<PathfindingComponent>(map->getPoints(), map->getPaths());
 	zombie.addGroup(groupEnemies);
 }
+
+
 void Game::clean() {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
 	std::cout << "Game cleaned!" << std::endl;
 }
+
+
 int Game::createRandomNumber(int lowestValue, int highestValue) {
 	int randomNumber = rand() % ((highestValue - lowestValue) + 1) + lowestValue;
 	return randomNumber;
 }
+
+
 void Game::spawnZombieAtRandomPosition() {
 	int index = Game::createRandomNumber(0, spawnPoints.size()-1);
 	Vector2D* spawnPos = spawnPoints[index];
 	Game::spawnZombie(spawnPos->x, spawnPos->y);
 }
 
+
 void Game::dropItem(int probability, int xpos, int ypos) {
 	int i = Game::createRandomNumber(0, probability);
 	if (i == probability) {
-		auto& item(manager.addEntity());
-		item.addComponent<TransformComponent>(1, xpos, ypos);
-		int a = Game::createRandomNumber(0, 1);
-		if (a == 0) {
-			//drop rockets
-			item.addComponent<SpriteComponent>("itemRockets");
-			item.addComponent<ColliderComponent>("itemRockets", xpos, ypos, 32);
-			item.addComponent<ItemComponent>(0, 3);
 
-		}
-		else if (a == 1) {
-			//drop health
-			item.addComponent<SpriteComponent>("itemHealth");
-			item.addComponent<ColliderComponent>("itemHealth", xpos, ypos, 32);
-			item.addComponent<ItemComponent>(20, 0);
-		}
+		auto& item(manager.addEntity());
 		item.addGroup(groupItems);
+		item.addComponent<TransformComponent>(1, xpos, ypos);
+		int itemNumber = Game::createRandomNumber(0, 1);
+		switch(itemNumber){
+			case 0:
+				//drop rockets
+				item.addComponent<SpriteComponent>("itemRockets");
+				item.addComponent<ColliderComponent>("itemRockets", xpos, ypos, 32);
+				item.addComponent<ItemComponent>(0, 3);
+				break;
+			case 1:
+				//drop health
+				item.addComponent<SpriteComponent>("itemHealth");
+				item.addComponent<ColliderComponent>("itemHealth", xpos, ypos, 32);
+				item.addComponent<ItemComponent>(20, 0);
+				break;
+			default:
+				break;
+		}
 	}
 }
 
