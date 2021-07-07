@@ -154,9 +154,12 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	// initial Audio
 	mAudioMgr->playMusic("Playboi Carti - Magnolia.wav");
 	mAudioMgr->pauseMusic();
+	// music volume
 	Mix_VolumeMusic(2);
 	// set volume of all SFX channels
 	Mix_Volume(-1, volume);
+	// footstep sound
+	Mix_Volume(0, volume * 2);
 }
 
 
@@ -229,13 +232,18 @@ void Game::newGame() {
 
 
 void Game::update() {
-
-	if (Game::playerWeapon == 0) {
+	switch (Game::playerWeapon) {
+	case Game::rifle:
 		weapon.getComponent<SpriteComponent>().setTex("rifle");
-	}
-	else if (Game::playerWeapon == 1) {
+		break;
+	case Game::rocketLauncher:
 		weapon.getComponent<SpriteComponent>().setTex("rocketLauncher");
+		break;
+	default:
+		weapon.getComponent<SpriteComponent>().setTex("rifle");
+		break;
 	}
+
 	if (!gameStarted) {
 		if (firstUpdate) {
 			manager.refresh();
@@ -393,8 +401,9 @@ void Game::placeUI(Entity& eEntity, int xpos, int ypos) {
 void Game::playerGameOver() {
 
 	mAudioMgr->pauseMusic();
-	// pause sfx- channel 0, footsteps
-	Mix_Pause(0);
+
+	// stop SFX of all channels
+	Mix_HaltChannel(-1);
 
 	drawGameOver = true;
 	gameStarted = false;

@@ -56,11 +56,9 @@ public:
 			collider.w = transform->width * transform->scale;
 			collider.h = transform->height * transform->scale;
 		}
-		/*else if (tag == "rocketlauncherprojectile") {			// maybe not needed
-			colliderCircle.x = static_cast<int>(transform->position.x);
-			colliderCircle.y = static_cast<int>(transform->position.y);
-		}*/
 	}
+
+
 	void setCollider(int h, int w){
 		collider.h = h;
 		collider.w = w;

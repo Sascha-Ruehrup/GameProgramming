@@ -37,38 +37,55 @@ public:
 	{
 		animated = isAnimated;
 		if (animated) {
-			Animation idle = Animation(1, 4, 200);	// row, spritecount, ms between sprites
-			Animation walkSideways = Animation(2, 10, 50);
-			Animation walkUp = Animation(0, 4, 200);
-			Animation walkDown = Animation(3, 3, 200);
-			Animation shootSideways = Animation(4, 4, 50);
-			Animation shootUp = Animation(6, 4, 50);
-			Animation shootDown = Animation(5, 3, 50);
+			Animation rifleIdleSideways = Animation(1, 4, 200);
+			Animation rifleIdleUp = Animation(17, 4, 100);
+			Animation rifleIdleDown = Animation(16, 3, 100);
+
+			Animation rifleWalkSideways = Animation(2, 10, 50);
+			Animation rifleWalkUp = Animation(0, 4, 200);
+			Animation rifleWalkDown = Animation(3, 3, 200);
+
+			Animation rifleShootSideways = Animation(4, 4, 50);
+			Animation rifleShootUp = Animation(6, 4, 50);
+			Animation rifleShootDown = Animation(5, 3, 50);
+
+			Animation rocketLauncherIdle = Animation(8, 4, 50);
+			Animation rocketLauncherIdleUp = Animation(14, 4, 100);
+			Animation rocketLauncherIdleDown = Animation(15, 3, 100);
 
 			Animation rocketLauncherWalkSidways = Animation(7, 10, 50);
-			Animation rocketLauncherIdle = Animation(8, 4, 50);
 			Animation rocketLauncherWalkUp = Animation(9, 4, 50);
 			Animation rocketLauncherWalkDown = Animation(10, 3, 50);
+
 			Animation rocketLauncherShootSideways = Animation(11, 4, 50);
 			Animation rocketLauncherShootUp = Animation(12, 4, 50);
 			Animation rocketLauncherShootDown = Animation(13, 3, 50);
 
-			animations.emplace("RifleIdle", idle);
-			animations.emplace("RifleWalkSideways", walkSideways);
-			animations.emplace("RifleWalkUp", walkUp);
-			animations.emplace("RifleWalkDown", walkDown);
-			animations.emplace("RifleShootSideways", shootSideways);
-			animations.emplace("RifleShootUp", shootUp);
-			animations.emplace("RifleShootDown", shootDown);
+			animations.emplace("RifleIdleSideways", rifleIdleSideways);
+			animations.emplace("RifleIdleUp", rifleIdleUp);
+			animations.emplace("RifleIdleDown", rifleIdleDown);
+
+			animations.emplace("RifleWalkSideways", rifleWalkSideways);
+			animations.emplace("RifleWalkUp", rifleWalkUp);
+			animations.emplace("RifleWalkDown", rifleWalkDown);
+
+			animations.emplace("RifleShootSideways", rifleShootSideways);
+			animations.emplace("RifleShootUp", rifleShootUp);
+			animations.emplace("RifleShootDown", rifleShootDown);
+
+			animations.emplace("RocketLauncherIdle", rocketLauncherIdle);
+			animations.emplace("RocketLauncherIdleUp", rocketLauncherIdleUp);
+			animations.emplace("RocketLauncherIdleDown", rocketLauncherIdleDown);
 
 			animations.emplace("RocketLauncherWalkSideways", rocketLauncherWalkSidways);
-			animations.emplace("RocketLauncherIdle", rocketLauncherIdle);
 			animations.emplace("RocketLauncherWalkUp", rocketLauncherWalkUp);
 			animations.emplace("RocketLauncherWalkDown", rocketLauncherWalkDown);
+
 			animations.emplace("RocketLauncherShootSideways", rocketLauncherShootSideways);
 			animations.emplace("RocketLauncherShootUp", rocketLauncherShootUp);
 			animations.emplace("RocketLauncherShootDown", rocketLauncherShootDown);
-			play("RifleIdle");
+
+			play("RifleIdleSideways");
 		}
 		setTex(id);
 	}

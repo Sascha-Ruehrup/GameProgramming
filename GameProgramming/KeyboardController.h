@@ -7,19 +7,32 @@
 class KeyboardController : public Component
 {
 public:
-	char lastKeyClicked = 'd';
-	int rifleCooldown = 0;
-	int rocketLauncherCooldown = 0;
 	TransformComponent* transform;
 	SpriteComponent* sprite;
-	bool weaponReady = true;
+
+	char lastKeyClicked = 'd';
+
+	int rifleCooldown = 0;
+	int rocketLauncherCooldown = 0;
+	bool rocketLauncherReady = true;
+
 	KeyboardController(){}
 	void init() override
 	{
 		transform = &entity->getComponent<TransformComponent>();
 		sprite = &entity->getComponent<SpriteComponent>();
 		Game::mAudioMgr->playSFX("run2.wav", -1, 0);
-		
+	}
+
+	void movePlayerX(const char* animation, char lastClicked, int velx) {
+		transform->velocity.x = velx;
+		sprite->play(animation);
+		lastKeyClicked = lastClicked;
+	}
+	void movePlayerY(const char* animation, char lastClicked, int vely) {
+		transform->velocity.y = vely;
+		sprite->play(animation);
+		lastKeyClicked = lastClicked;
 	}
 
 	void update() override
@@ -30,37 +43,31 @@ public:
 		else {
 			Mix_Pause(0);
 		}
+
 		rifleCooldown--;
 		rocketLauncherCooldown--;
+
 		Vector2D playerPosition = transform->position;
-		int weapon = Game::playerWeapon;
-		switch(weapon){
+
+		switch(Game::playerWeapon){
 		case Game::rocketLauncher:
 			if (Game::event.type == SDL_KEYDOWN)
 			{
 				switch (Game::event.key.keysym.sym)
 				{
 				case SDLK_w:
-					transform->velocity.y = -1;
-					sprite->play("RocketLauncherWalkUp");
-					lastKeyClicked = 'w';
+					movePlayerY("RocketLauncherWalkUp", 'w', -1);
 					break;
 				case SDLK_a:
-					transform->velocity.x = -1;
-					sprite->play("RocketLauncherWalkSideways");
+					movePlayerX("RocketLauncherWalkSideways", 'a', -1);
 					sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
-					lastKeyClicked = 'a';
 					break;
 				case SDLK_d:
-					transform->velocity.x = 1;
-					sprite->play("RocketLauncherWalkSideways");
+					movePlayerX("RocketLauncherWalkSideways", 'd', 1);
 					sprite->spriteFlip = SDL_FLIP_NONE;
-					lastKeyClicked = 'd';
 					break;
 				case SDLK_s:
-					transform->velocity.y = 1;
-					sprite->play("RocketLauncherWalkDown");
-					lastKeyClicked = 's';
+					movePlayerY("RocketLauncherWalkDown", 's', 1);
 					break;
 				case SDLK_e:
 					Game::playerWeapon = Game::rifle;
@@ -69,8 +76,7 @@ public:
 					Game::playerWeapon = Game::rifle;
 					break;
 				case SDLK_SPACE:
-					if ((weaponReady) && (Game::rocketAmmunition>0)&&(rocketLauncherCooldown<=0)) {
-
+					if ((rocketLauncherReady) && (Game::rocketAmmunition>0)&&(rocketLauncherCooldown<=0)) {
 
 						switch (lastKeyClicked)
 						{
@@ -94,8 +100,8 @@ public:
 							break;
 						}
 						Game::mAudioMgr->playSFX("rocket.wav", 0, -1);
-						weaponReady = false;
 						Game::rocketAmmunition--;
+						rocketLauncherReady = false;
 						rocketLauncherCooldown = 60;
 					}
 					break;
@@ -134,7 +140,7 @@ public:
 					break;
 				case SDLK_SPACE:
 					sprite->play("RocketLauncherIdle");
-					weaponReady = true;
+					rocketLauncherReady = true;
 					break;
 				default:
 					break;
