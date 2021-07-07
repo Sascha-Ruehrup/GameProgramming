@@ -1,13 +1,10 @@
 #include "AssetManager.h"
 #include "Components.h"
-AssetManager::AssetManager(Manager* man) : manager(man)
-{
 
-}
-AssetManager::~AssetManager()
-{
+AssetManager::AssetManager(Manager* man) : manager(man){}
+AssetManager::~AssetManager(){}
 
-}
+
 void AssetManager::createProjectile(int weapon,Vector2D pos, Vector2D vel, int range, int speed, std::string id, SDL_RendererFlip flip)
 {
 	auto& projectile(manager->addEntity());
@@ -23,18 +20,25 @@ void AssetManager::createProjectile(int weapon,Vector2D pos, Vector2D vel, int r
 void AssetManager::addTexture(std::string id, const char* path) {
 	textures.emplace(id, TextureManager::LoadTexture(path));
 }
+
+
 SDL_Texture* AssetManager::getTexture(std::string id)
 {
 	return textures[id];
 }
+
+
 void AssetManager::addFont(std::string id, std::string path, int fontSize)
 {
 	fonts.emplace(id, TTF_OpenFont(path.c_str(), fontSize));
 }
+
+
 TTF_Font* AssetManager::getFont(std::string id)
 {
 	return fonts[id];
 }
+
 
 Mix_Music* AssetManager::getMusic(std::string filename) {
 
@@ -48,6 +52,7 @@ Mix_Music* AssetManager::getMusic(std::string filename) {
 	}
 	return mMusic[fullPath];
 }
+
 
 Mix_Chunk* AssetManager::getSFX(std::string filename) {
 	std::string fullPath = "assets/";

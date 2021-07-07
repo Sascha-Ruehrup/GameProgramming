@@ -53,7 +53,6 @@ auto& bloods(manager.getGroup(Game::groupBlood));
 int Game::playerWeapon = Game::rifle;
 int Game::rocketAmmunition = 0;
 int Game::volume = 32;
-int health = 100;
 int scoreValue = 0;
 int waveValue = 1;
 int waveZombieCounter = 30;
@@ -284,13 +283,6 @@ void Game::update() {
 				}
 				else if (c->getComponent<ColliderComponent>().tag == "lava") {
 					updateHealth(1);
-					if (player.getComponent<HealthManagementComponent>().maximumHealth >= 1) {
-						player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
-					}
-					else if (health <= 0)
-					{
-						playerGameOver();
-					}
 				}
 			}
 		}
@@ -312,13 +304,6 @@ void Game::update() {
 			if (Collision::AABB(e->getComponent<ColliderComponent>().collider, playerCol))
 			{
 				updateHealth(1);
-				if (health >= 1) {
-					player.getComponent<HealthManagementComponent>().maximumHealth -= 1;
-				}
-				else if (health <= 0)
-				{
-					playerGameOver();
-				}
 			}
 		}
 
@@ -329,17 +314,14 @@ void Game::update() {
 				{
 					TransformComponent transform = e->getComponent<TransformComponent>();
 					if (p->getComponent<WeaponComponent>().weapon == Game::rifle) {
-						e->getComponent<HealthManagementComponent>().maximumHealth -= 1;
 
 						auto& blood(manager.addEntity());
 						blood.addComponent<TransformComponent>(transform.position.x, transform.position.y, 32, 32, 4);
 						blood.addComponent<SpriteComponent>("blood");
 						blood.getComponent<SpriteComponent>().setAngle(Game::createRandomNumber(0, 360));
 						blood.addGroup(groupBlood);
+						damageZombie(e,1);
 
-						if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
-							killZombie(e);
-						}
 					}
 					else if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {
 						int xpos = p->getComponent<TransformComponent>().position.x;
@@ -362,7 +344,7 @@ void Game::update() {
 		for (auto& ex : explosions) {
 			for (auto& e : enemies) {
 				if (Collision::CircleRect(ex->getComponent<ColliderComponent>().colliderCircle, e->getComponent<ColliderComponent>().collider)) {
-					killZombie(e);
+					damageZombie(e, 5);
 				}
 			}
 		}
@@ -420,15 +402,29 @@ void Game::playerGameOver() {
 
 
 void Game::updateHealth(int damage) {
-	if ((health - damage) > 100) {
-		health = 100;
-		healthbar.getComponent<SpriteComponent>().srcRect.w = health;
-		healthbar.getComponent<TransformComponent>().width = health;
+	int* health = &player.getComponent<HealthManagementComponent>().maximumHealth;
+	*health -= damage;
+	if (*health <= 0) {
+		playerGameOver();
+		return;
 	}
-	else {
-		health -= damage;
-		healthbar.getComponent<SpriteComponent>().srcRect.w -= damage;
-		healthbar.getComponent<TransformComponent>().width -= damage;
+	else if (*health > 100) {
+		*health = 100;
+	}
+	healthbar.getComponent<SpriteComponent>().srcRect.w = *health;
+	healthbar.getComponent<TransformComponent>().width = *health;
+}
+
+
+void Game::damageZombie(Entity*& eEntity, int damage) {
+	int *health = &eEntity->getComponent<HealthManagementComponent>().maximumHealth;
+	*health -= damage;
+	if (*health <= 0) {
+		TransformComponent transform = eEntity->getComponent<TransformComponent>();
+		Game::dropItem(4, transform.position.x, transform.position.y);
+		waveZombieCounter--;
+		scoreValue++;
+		eEntity->destroy();
 	}
 }
 
@@ -482,14 +478,6 @@ void Game::render()
 	SDL_RenderPresent(renderer);
 }
 
-
-void Game::killZombie(Entity*& eEntity) {
-	TransformComponent transform = eEntity->getComponent<TransformComponent>();
-	Game::dropItem(4, transform.position.x, transform.position.y);
-	eEntity->destroy();
-	waveZombieCounter--;
-	scoreValue++;
-}
 
 
 void Game::spawnZombie(int xpos, int ypos)
