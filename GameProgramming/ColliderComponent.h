@@ -61,5 +61,9 @@ public:
 			colliderCircle.y = static_cast<int>(transform->position.y);
 		}*/
 	}
+	void setCollider(int h, int w){
+		collider.h = h;
+		collider.w = w;
+	}
 
 };

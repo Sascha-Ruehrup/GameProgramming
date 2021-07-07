@@ -17,6 +17,7 @@ private:
 	bool animated = false;
 	int frames = 0;
 	int speed = 100;
+	double angle = 0.0;
 public:
 	int animationIndex = 0;
 	SDL_Rect srcRect, destRect;
@@ -105,12 +106,15 @@ public:
 	}
 	void draw() override
 	{
-		TextureManager::draw(texture, srcRect, destRect,spriteFlip);
+		TextureManager::draw(texture, srcRect, destRect,spriteFlip, angle);
 	}
 	void play(const char* animationName)
 	{
 		frames = animations[animationName].frames;
 		animationIndex = animations[animationName].index;
 		speed = animations[animationName].speed;
+	}
+	void setAngle(double angle) {
+		this->angle = angle;
 	}
 };

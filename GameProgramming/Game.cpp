@@ -26,6 +26,7 @@ bool drawGameOver = false;
 Vector2D* Game::playerPosition = new Vector2D(0.0f,0.0f);
 int Game::playerWeapon = 0;
 int Game::rocketAmmunition;
+int Game::volume = 32;
 
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
@@ -104,6 +105,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->addTexture("explosion", "assets/explosion.png");
 	assets->addTexture("itemHealth", "assets/healthItem.png");
 	assets->addTexture("itemRockets", "assets/rocketItem.png");
+	assets->addTexture("blood", "assets/blood.png");
 
 	assets->addFont("showg48", "assets/SHOWG.ttf", 48);
 	map = new Map("terrain", 2, 32);
@@ -135,7 +137,10 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	startbutton.addComponent<SpriteComponent>("startButton");
 	gameOver.addComponent<TransformComponent>(376, 220, 64, 256, 2);
 	gameOver.addComponent<SpriteComponent>("gameOver");
-
+	mAudioMgr->playMusic("Playboi Carti - Magnolia.wav");
+	mAudioMgr->pauseMusic();
+	Mix_VolumeMusic(2);
+	Mix_Volume(-1, volume);
 }
 
 
@@ -147,6 +152,7 @@ auto& projectiles(manager.getGroup(Game::groupProjectiles));
 auto& enemies(manager.getGroup(Game::groupEnemies));
 auto& explosions(manager.getGroup(Game::groupExplosions));
 auto& items(manager.getGroup(Game::groupItems));
+auto& bloods(manager.getGroup(Game::groupBlood));
 
 void Game::handleEvents()
 {
@@ -185,6 +191,9 @@ void Game::newGame() {
 	for (auto& p : projectiles) {
 		p->destroy();
 	}
+	for (auto& b : bloods) {
+		b->destroy();
+	}
 	TransformComponent transform = player.getComponent<TransformComponent>();
 	transform.position.x = 250;
 	transform.position.y = 320;
@@ -206,8 +215,9 @@ void Game::newGame() {
 
 	timer = 180;
 
-	mAudioMgr->playMusic("Playboi Carti - Magnolia.wav");
-	Mix_VolumeMusic(2);
+
+	Mix_Resume(0);
+	mAudioMgr->resumeMusic();
 
 	drawGameOver = false;
 	gameStarted = true;
@@ -278,6 +288,8 @@ void Game::update() {
 						drawGameOver = true;
 						std::cout << " Tot" << std::endl;
 						gameStarted = false;
+						mAudioMgr->pauseMusic();
+						Mix_Pause(0);
 						//TODO
 						//endGame();
 					}
@@ -311,6 +323,8 @@ void Game::update() {
 				else if (health <= 0)
 				{
 					drawGameOver = true;
+					mAudioMgr->pauseMusic();
+					Mix_Pause(0);
 					std::cout << " Tot" << std::endl;
 					gameStarted = false;
 					//TODO
@@ -327,13 +341,18 @@ void Game::update() {
 					TransformComponent transform = e->getComponent<TransformComponent>();
 					if (p->getComponent<WeaponComponent>().weapon == Game::rifle) {
 						e->getComponent<HealthManagementComponent>().maximumHealth -= 1;
+						auto& blood(manager.addEntity());
+						blood.addComponent<TransformComponent>(transform.position.x, transform.position.y, 32, 32, 4);
+						blood.addComponent<SpriteComponent>("blood");
+						blood.getComponent<SpriteComponent>().setAngle(Game::createRandomNumber(0, 360));
+						blood.addGroup(groupBlood);
 						if (e->getComponent<HealthManagementComponent>().maximumHealth <= 0) {
 							Game::dropItem(4,transform.position.x, transform.position.y);
 							e->destroy();
 							waveZombieCounter--;
 							scoreValue++;
 
-							mAudioMgr->playSFX("Wilhelm_Scream.wav");
+							//mAudioMgr->playSFX("Wilhelm_Scream.wav",0, -1);
 						}
 					}
 					else if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {
@@ -344,6 +363,7 @@ void Game::update() {
 						explosion.addComponent<SpriteComponent>("explosion");
 						explosion.addComponent<ColliderComponent>("explosion", xpos, ypos, 96, true);
 						explosion.addGroup(groupExplosions);
+						Game::mAudioMgr->playSFX("explosion.wav", 0, -1);
 						explosionTimer = 10;
 						std::cout << "Explosion!" << std::endl;
 					}
@@ -386,7 +406,7 @@ void Game::update() {
 					waveZombieCounter--;
 					scoreValue++;
 
-					mAudioMgr->playSFX("Wilhelm_Scream.wav");
+					//mAudioMgr->playSFX("Wilhelm_Scream.wav", 0, -1);
 				}
 			}
 		}
@@ -442,6 +462,10 @@ void Game::render()
 		for (auto& t : tiles)
 		{
 			t->draw();
+		}
+		for (auto& b : bloods)
+		{	
+			b->draw();
 		}
 		for (auto& i : items)
 		{
@@ -530,5 +554,4 @@ void Game::dropItem(int probability, int xpos, int ypos) {
 		item.addGroup(groupItems);
 	}
 }
-
 

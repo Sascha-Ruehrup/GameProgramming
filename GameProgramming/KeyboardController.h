@@ -2,6 +2,7 @@
 #include "Game.hpp"
 #include "ECS.h"
 #include "Components.h"
+#include <cmath>
 
 class KeyboardController : public Component
 {
@@ -17,11 +18,18 @@ public:
 	{
 		transform = &entity->getComponent<TransformComponent>();
 		sprite = &entity->getComponent<SpriteComponent>();
+		Game::mAudioMgr->playSFX("run2.wav", -1, 0);
 		
 	}
 
 	void update() override
 	{	
+		if (playerIsWalking()) {
+			Mix_Resume(0);
+		}
+		else {
+			Mix_Pause(0);
+		}
 		rifleCooldown--;
 		rocketLauncherCooldown--;
 		Vector2D playerPosition = transform->position;
@@ -85,6 +93,7 @@ public:
 						default:
 							break;
 						}
+						Game::mAudioMgr->playSFX("rocket.wav", 0, -1);
 						weaponReady = false;
 						Game::rocketAmmunition--;
 						rocketLauncherCooldown = 60;
@@ -188,6 +197,7 @@ public:
 						default:
 							break;
 						}
+						Game::mAudioMgr->playSFX("shooting.wav", 0, -1);
 						rifleCooldown = 10;
 					}
 					break;
@@ -235,4 +245,11 @@ public:
 		}
 		
 	}
+	bool playerIsWalking() {
+		if ( (std::abs(transform->velocity.x) + std::abs(transform->velocity.y)) != 0) {
+			return true;
+		}
+		return false;
+	}
 };
+

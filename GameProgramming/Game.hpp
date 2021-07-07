@@ -28,7 +28,7 @@ public:
 	void updateHealth(int damage);
 	void spawnZombie(int xpos, int ypos);
 	bool running() { return isRunning; };
-	int createRandomNumber(int lowestValue, int highestValue);
+	static int createRandomNumber(int lowestValue, int highestValue);
 	void spawnZombieAtRandomPosition();
 	void dropItem(int probability, int xpos, int ypos);
 
@@ -40,11 +40,13 @@ public:
 	static AssetManager* assets;
 	static int playerWeapon;
 	static int rocketAmmunition;
+	static int volume;
 	static AudioManager* mAudioMgr;
 
 	enum groupLabels : std::size_t
 	{
 		groupMap,
+		groupBlood,
 		groupPlayers,
 		groupEnemies,
 		groupColliders,

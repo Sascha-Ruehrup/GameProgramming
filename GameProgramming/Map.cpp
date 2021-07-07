@@ -118,6 +118,13 @@ vector<std::vector<int>> Map::getPaths()
 void Map::addTile(int srcX, int srcY, int xpos, int ypos)
 {
 	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, tileSize, mapScale, textureID);
+	if (tile.hasComponent<ColliderComponent>()) {
+		tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, tileSize, mapScale, textureID, 0.0);
+	}
+	else {
+		// only groundtile has no collider
+		double angle = static_cast<double>(Game::createRandomNumber(0, 3)*90);
+		tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, tileSize, mapScale, textureID, angle);
+	}
 	tile.addGroup(Game::groupMap);
 }

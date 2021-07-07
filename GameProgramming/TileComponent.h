@@ -10,6 +10,7 @@ public:
 	SDL_Texture* texture;
 	SDL_Rect srcRect, destRect;
 	Vector2D position;
+	double angle = 0.0;
 
 	TileComponent() = default;
 
@@ -18,12 +19,13 @@ public:
 		SDL_DestroyTexture(texture);
 	}
 
-	TileComponent(int srcX, int srcY, int xpos, int ypos, int tsize, int tscale, std::string id) 
+	TileComponent(int srcX, int srcY, int xpos, int ypos, int tsize, int tscale, std::string id, double an) 
 	{
 		texture = Game::assets->getTexture(id);
 
 		position.x = static_cast<float>(xpos);
 		position.y = static_cast<float>(ypos);
+		angle = an;
 
 		srcRect.x = srcX;
 		srcRect.y = srcY;
@@ -42,7 +44,7 @@ public:
 
 	void draw() override
 	{
-		TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);
+		TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE, angle);
 	}
 
 };
