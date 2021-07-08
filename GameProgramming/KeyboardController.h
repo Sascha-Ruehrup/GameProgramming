@@ -25,12 +25,12 @@ public:
 	}
 
 	void movePlayerX(const char* animation, char lastClicked, int velx) {
-		transform->velocity.x = velx;
+		transform->velocity.x = static_cast<float>(velx);
 		sprite->play(animation);
 		lastKeyClicked = lastClicked;
 	}
 	void movePlayerY(const char* animation, char lastClicked, int vely) {
-		transform->velocity.y = vely;
+		transform->velocity.y = static_cast<float>(vely);
 		sprite->play(animation);
 		lastKeyClicked = lastClicked;
 	}

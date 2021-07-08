@@ -10,6 +10,7 @@ class PathfindingComponent : public Component
 {
 private:
 	TransformComponent* transform;
+	SpriteComponent* sprite;
 	Graph* graph;
 	int timer = 0;
 public:
@@ -33,16 +34,10 @@ public:
 		destination = *Game::playerPosition;
 	}
 
-	/*PathfindingComponent(std::vector<Vector2D*> &pts, std::vector<std::vector<int>> pa)
-	{
-		graph->points = pts;
-		graph->paths = pa;
-
-	}*/
-
 	void init() override
 	{
 		transform = &entity->getComponent<TransformComponent>();
+		sprite = &entity->getComponent<SpriteComponent>();
 
 	}
 	
@@ -78,8 +73,8 @@ public:
 	}
 
 	void goToDestination() {
-		int xdir = destination.x - transform->position.x;
-		int ydir = destination.y - transform->position.y;
+		int xdir = static_cast<int>(destination.x - transform->position.x);
+		int ydir = static_cast<int>(destination.y - transform->position.y);
 		if ((xdir < 5) && (ydir<5)) {
 			transform->speed = 1;
 		}else {
@@ -92,8 +87,14 @@ public:
 		if (!ydir == 0) {
 			ydir = ydir / abs(ydir);
 		}
-		transform->velocity.x = xdir;
-		transform->velocity.y = ydir;
+		if (xdir > 0) {
+			sprite->spriteFlip = SDL_FLIP_NONE;
+		}
+		else if (xdir < 0) {
+			sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
+		}
+		transform->velocity.x = static_cast<float>(xdir);
+		transform->velocity.y = static_cast<float>(ydir);
 		
 	}
 
@@ -101,11 +102,9 @@ public:
 		// finds the closest point in points
 		// returns the points id
 	{
-		int best;
+		int best = 0;
 		float score = INFINITY;
 		for (int i = 0; i < graph->points.size(); i++) {
-		//float distance = sqrt(pow(static_cast<float>(points[i]->x - transform->position.x), 2) +
-		//			pow(static_cast<float>(points[i]->y - transform->position.y), 2));
 		float distance = length(graph->points[i], position);
 			if (distance < score) {
 				best = i;
@@ -117,8 +116,8 @@ public:
 
 	float length(Vector2D* start, Vector2D* end)
 	{
-		float euklid = sqrt(pow(static_cast<float>(start->x - end->x), 2) +
-			pow(static_cast<float>(start->y - end->y), 2));
+		float euklid = static_cast<float>(sqrt(pow(static_cast<float>(start->x - end->x), 2) +
+			pow(static_cast<float>(start->y - end->y), 2)));
 		return euklid;
 	}
 
@@ -127,7 +126,7 @@ public:
 		for (int i = 0; i < graph->paths.size(); i++) {
 			std::vector<int>* vec = &graph->paths[i];
 			for (int j = 0; j < vec->size(); j++) {
-				int distance = length(graph->points[i], graph->points[(*vec)[j]]);	//find euklid dist from 2 points of edge
+				int distance = static_cast<int>(length(graph->points[i], graph->points[(*vec)[j]]));	//find euklid dist from 2 points of edge
 				graph->addEdge(i, (*vec)[j], distance);
 			}
 		}

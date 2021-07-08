@@ -1,7 +1,7 @@
 #include "Graph.h"
 #include <algorithm>
 
-#define V 15
+#define V 15    // hardcoded for specific Mapfile
 
 // Create a graph with given vertices,
 // and maintain an adjacency list
@@ -25,65 +25,6 @@ void Graph::addEdge(int src, int dest, int weight) {
     (*vec)[dest] = weight;
 }
 
-/*std::vector<Vector2D> Graph::Dijkstra(int startVertex, int target)
-{
-    std::vector<int> Q;
-    std::vector<int> dist;
-    std::vector<int> prev;
-    std::vector<bool> visited;
-
-    std::vector<Vector2D> shortestPath;
-
-    for (int v = 0; v < paths.size(); v++)
-    {
-        dist.push_back(INT_MAX);
-        prev.push_back(-1);
-        Q.push_back(v);
-        visited.push_back(false);
-    }
-    dist[startVertex] = 0;
-
-    while (!Q.empty())
-    {
-        int lowestVal = INT_MAX;
-        int u = -1;
-        for (int i = 0; i < dist.size(); i++) {
-            if (dist[i]<lowestVal){
-                lowestVal = dist[i];
-                u = i;
-            }
-        }
-
-        
-
-
-        // check if u is target
-        if (u == target) {
-            if ((prev[u]!=-1) || (u = startVertex)) {
-                while (u != -1) {
-                    shortestPath.push_back(*points[u]);
-                    u = prev[u];
-                }
-            }
-        }
-
-        // extend to all neighbors
-        for (int index : graphWeights[u]) {
-            if (graphWeights[u][index] != 0) {
-                int length = graphWeights[u][index];
-                int alt = dist[u] + length;
-                if (alt < dist[index]) {
-                    dist[index] = alt;
-                    prev[index] = u;
-                }
-            }
-        }
-       
-    }
-    return shortestPath;
-};*/
-
-
 
 // A utility function to find the 
 // vertex with minimum distance
@@ -104,36 +45,6 @@ int Graph::minDistance(int dist[],bool sptSet[])
     return min_index;
 }
 
-// Function to print shortest
-// path from source to j
-// using parent array
-void Graph::printPath(int parent[], int j)
-{
-
-    // Base Case : If j is source
-    if (parent[j] == -1)
-        return;
-
-    printPath(parent, parent[j]);
-
-    printf("%d ", j);
-}
-
-// A utility function to print 
-// the constructed distance
-// array
-int Graph::printSolution(int dist[], int n,int parent[])
-{
-    int src = 0;
-    printf("Vertex\t Distance\tPath");
-    for (int i = 1; i < V; i++)
-    {
-        printf("\n%d -> %d \t\t %d\t\t%d ",
-            src, i, dist[i], src);
-        printPath(parent, i);
-    }
-    return 0;
-}
 
 // Funtion that implements Dijkstra's
 // single source shortest path
@@ -218,10 +129,6 @@ int Graph::printSolution(int dist[], int n,int parent[])
                 dist[v] = dist[u] + graphWeights[u][v];
             }
     }
-
-    // print the constructed
-    // distance array
-    //printSolution(dist, V, parent);
 
     return;
 }

@@ -332,8 +332,8 @@ void Game::update() {
 
 					}
 					else if (p->getComponent<WeaponComponent>().weapon == Game::rocketLauncher) {
-						int xpos = p->getComponent<TransformComponent>().position.x;
-						int ypos = p->getComponent<TransformComponent>().position.y;
+						int xpos = static_cast<int>(p->getComponent<TransformComponent>().position.x);
+						int ypos = static_cast<int>(p->getComponent<TransformComponent>().position.y);
 
 						auto& explosion(manager.addEntity());
 						explosion.addComponent<TransformComponent>(xpos - 80, ypos - 80, 32, 32, 6);
@@ -368,8 +368,8 @@ void Game::update() {
 
 
 		// adjust camera position relative to player's position
-		camera.x = player.getComponent<TransformComponent>().position.x - 640;
-		camera.y = player.getComponent<TransformComponent>().position.y - 400;
+		camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x) - 640;
+		camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y) - 400;
 		if (camera.x < 0) {
 			camera.x = 0;
 		}
@@ -393,8 +393,8 @@ void Game::update() {
 
 void Game::placeUI(Entity& eEntity, int xpos, int ypos) {
 	Vector2D* position = &eEntity.getComponent<TransformComponent>().position;
-	position->x = Game::camera.x + xpos;
-	position->y = Game::camera.y + ypos;
+	position->x = static_cast<float>(Game::camera.x + xpos);
+	position->y = static_cast<float>(Game::camera.y + ypos);
 }
 
 
@@ -413,15 +413,15 @@ void Game::playerGameOver() {
 void Game::updateHealth(int damage) {
 	int* health = &player.getComponent<HealthManagementComponent>().maximumHealth;
 	*health -= damage;
-	if (*health <= 0) {
-		playerGameOver();
-		return;
-	}
-	else if (*health > 100) {
+	if (*health > 100) {
 		*health = 100;
 	}
 	healthbar.getComponent<SpriteComponent>().srcRect.w = *health;
 	healthbar.getComponent<TransformComponent>().width = *health;
+	if (*health <= 0) {
+		playerGameOver();
+		return;
+	}
 }
 
 
@@ -430,7 +430,7 @@ void Game::damageZombie(Entity*& eEntity, int damage) {
 	*health -= damage;
 	if (*health <= 0) {
 		TransformComponent transform = eEntity->getComponent<TransformComponent>();
-		Game::dropItem(4, transform.position.x, transform.position.y);
+		Game::dropItem(4, static_cast<int>(transform.position.x), static_cast<int>(transform.position.y));
 		waveZombieCounter--;
 		scoreValue++;
 		eEntity->destroy();
@@ -518,7 +518,7 @@ int Game::createRandomNumber(int lowestValue, int highestValue) {
 void Game::spawnZombieAtRandomPosition() {
 	int index = Game::createRandomNumber(0, spawnPoints.size()-1);
 	Vector2D* spawnPos = spawnPoints[index];
-	Game::spawnZombie(spawnPos->x, spawnPos->y);
+	Game::spawnZombie(static_cast<int>(spawnPos->x), static_cast<int>(spawnPos->y));
 }
 
 
