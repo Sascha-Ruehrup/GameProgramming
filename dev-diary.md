@@ -151,3 +151,6 @@ Einige Änderungen, die wir ebenfalls vorgenommen haben:
 10. Nachdem man gestorben ist und eine neue Runde startet, waren die Laufgeräusche weg (sie sind wieder da)  
 11. sehr viel überflüssiger und veralteter Code entfernt
 
+### DOWNLOAD THE GAME
+[zum Download](https://github.com/Sascha-Ruehrup/GameProgramming/releases/tag/1.0) - Download v1.0-Boxhead.zip die .exe im Ordner startet das Spiel ohne andere Dependencies.
+
