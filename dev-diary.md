@@ -152,5 +152,5 @@ Einige Änderungen, die wir ebenfalls vorgenommen haben:
 11. sehr viel überflüssiger und veralteter Code entfernt
 
 ### DOWNLOAD THE GAME
-[zum Download](https://github.com/Sascha-Ruehrup/GameProgramming/releases/tag/1.0) - Download v1.0-Boxhead.zip die .exe im Ordner startet das Spiel ohne andere Dependencies.
+[zum Download](https://github.com/Sascha-Ruehrup/GameProgramming/releases/tag/v1.0) - Download v1.0-Boxhead.zip die .exe im Ordner startet das Spiel ohne andere Dependencies.
 
