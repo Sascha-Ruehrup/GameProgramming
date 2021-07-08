@@ -125,7 +125,19 @@ Außerdem wurde der Rocketlauncher hinzugefügt. Diesen kann der Spieler auswäh
 ### 07/08.07.2021
 <p align=justify>In unserem letzten Blogbeitrag möchten wir noch zusammenfassen, welche Änderungen und neuen Features hinzugekommen sind. Es wurden einige Bugs gefixt, Komfortänderungen durchgeführt und diverse Texturen überarbeitet. Texturen können jetzt mit einem Winkel gedrawed werden, was wir zum einem bei unserem Maptiles in 90 Grad Schritten verwenden und zum anderen beim Blut von Zombies in kompletten 360°. Durch die Rotation sieht die Map nicht überall gleich aus und es entstehen bei jedem Spielstart neue Muster in Boden, Wand und Lava. Das Blut, welches bei einem Treffer des Zombies durch ein normales Projektil erschaffen wird, bleibt bis zum Tod des Spielers auf der Map erhalten.
 Wir haben ebenfalls einen Audiomanager eingebaut, der solange eine Runde läuft Musik im Hintergrund auf Dauerschleife abspielt und bei einzelnen Events Soundeffekte einmischt. Darunter fallen Schrittgeräusche des Spielers, Schussgeräusche beim abfeuern der Rifle und des Raketenwerfers und bei der Explosion einer Rakete.
-Einige Änderungen, die wir ebenfalls vorgenommen haben:</p>
+</p>
+Wir haben für die Map nur drei verschiedene Texturen verwendet, daneben befinden sich unsere Rakete und ein Projektil
+
+<img src="images/terrain_ss.png" height="600%"/>    <img src="images/rocketProjectileSideways.png" height="600%"/>    <img src="images/projectilesideways.png" height="600%"/>
+
+Unser am Ende recht umfangreich gewordenes Spritesheet für den Spieler
+
+<img src="images/RamboSpritesheet.png"/>
+Und zum Abschluss ein Bild direkt aus unserem Spiel
+
+<img src="images/Boxhead Screenshot.PNG"/>
+  
+Einige Änderungen, die wir ebenfalls vorgenommen haben:
 
 1. Unsere Map hat jetzt auf jeder Seite einen Eingang für Zombies (vorher nur oben und an den Seiten)  
 2. Der Spieler kann nicht mehr durch diese Eingänge die Map verlassen  
@@ -137,6 +149,5 @@ Einige Änderungen, die wir ebenfalls vorgenommen haben:</p>
 8. Der Waffenwechsel wird nun direkt im Sprite widergespiegelt, anstatt erst nach der nächsten Tastatureingabe zu aktualisieren 
 9. Die Zombiesprites werden jetzt geflipt, wenn sie ihre horizontale Richtung ändern (Moonwalking war irgendwie auch cool)  
 10. Nachdem man gestorben ist und eine neue Runde startet, waren die Laufgeräusche weg (sie sind wieder da)  
-11. sehr viel überflüssiger und veralteter Code entfernt  
+11. sehr viel überflüssiger und veralteter Code entfernt
 
-  
