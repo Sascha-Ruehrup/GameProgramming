@@ -121,4 +121,22 @@ Der Spieler kann dem Zombie als Target übergeben werden, sodass der Zombie ihn 
   
 Außerdem wurde der Rocketlauncher hinzugefügt. Diesen kann der Spieler auswählen, wenn er e oder q drückt. Wenn er dies tut ändert sich die Textur des Spiel- Characters mit der Rifle zu dem Spieler mit einem Raketenwerfer. Außerdem sehen die Projektile des Raketenwerfers aus wie Raketen und erzeugen eine Explosion, wenn sie mit einem Zombie kollidieren. Diese Explosion ist für wenige Frames zu sehen und hat einen Collider, welcher bei einer Kollision Schaden macht und zumindest die aktuell einzigen Gegner die Zombies auf einen Schlag tötet. Für den Waffenwechsel wurde außerdem die Textur unten Links am Bildschirm angepasst und zeigt nun immer die aktuell ausgewählte Waffe an. Über dieser Anzeige wird außerdem immer angezeigt wieviele Raketen der Spieler aktuell hat. An weitere Raketen kann der Spieler über die Itemdrops, welche zufällig von besiegten Zombies erzeugt werden, gelangen. Der zweite mögliche Itemdrop ist ein Herzymbol, welches dem Spieler beim Einsammeln Leben gibt.
 </p>
+
+### 07/08.07.2021
+<p align=justify>In unserem letzten Blogbeitrag möchten wir noch zusammenfassen, welche Änderungen und neuen Features hinzugekommen sind. Es wurden einige Bugs gefixt, Komfortänderungen durchgeführt und diverse Texturen überarbeitet. Texturen können jetzt mit einem Winkel gedrawed werden, was wir zum einem bei unserem Maptiles in 90 Grad Schritten verwenden und zum anderen beim Blut von Zombies in kompletten 360°. Durch die Rotation sieht die Map nicht überall gleich aus und es entstehen bei jedem Spielstart neue Muster in Boden, Wand und Lava. Das Blut, welches bei einem Treffer des Zombies durch ein normales Projektil erschaffen wird, bleibt bis zum Tod des Spielers auf der Map erhalten.
+Wir haben ebenfalls einen Audiomanager eingebaut, der solange eine Runde läuft Musik im Hintergrund auf Dauerschleife abspielt und bei einzelnen Events Soundeffekte einmischt. Darunter fallen Schrittgeräusche des Spielers, Schussgeräusche beim abfeuern der Rifle und des Raketenwerfers und bei der Explosion einer Rakete.
+Einige Änderungen, die wir ebenfalls vorgenommen haben:</p>
+
+1. Unsere Map hat jetzt auf jeder Seite einen Eingang für Zombies (vorher nur oben und an den Seiten)  
+2. Der Spieler kann nicht mehr durch diese Eingänge die Map verlassen  
+3. Beim Neustart einer Runde wird der Spieler an die definierte Ausgangsposition zurückgesetzt (besser als immer wieder in Lava zu sterben)  
+4. Entities können jetzt an die Funktion placeUI zusammen mit der Position übergeben werden, um als UI Element platziert zu werden  
+5. UI Texturen werden jetzt ordentlich deleted (über 20GB belegter Arbeitsspeicher sind nach einigen Minuten doch etwas zu viel)  
+6. Das Leben des Spielers wird nur noch im HealthComponent gespeichert (wurde vorher parallel in 2 variablen verändert)  
+7. Das Spielerspritesheet hat jetzt Walk- Shoot- und Idlesprites in jede notwendige Richtung  
+8. Der Waffenwechsel wird nun direkt im Sprite widergespiegelt, anstatt erst nach der nächsten Tastatureingabe zu aktualisieren 
+9. Die Zombiesprites werden jetzt geflipt, wenn sie ihre horizontale Richtung ändern (Moonwalking war irgendwie auch cool)  
+10. Nachdem man gestorben ist und eine neue Runde startet, waren die Laufgeräusche weg (sie sind wieder da)  
+11. sehr viel überflüssiger und veralteter Code entfernt  
+
   
