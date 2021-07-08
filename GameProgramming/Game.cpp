@@ -403,7 +403,8 @@ void Game::playerGameOver() {
 	mAudioMgr->pauseMusic();
 
 	// stop SFX of all channels
-	Mix_HaltChannel(-1);
+	Mix_Pause(-1);
+	//Mix_HaltChannel(-1);
 
 	drawGameOver = true;
 	gameStarted = false;
